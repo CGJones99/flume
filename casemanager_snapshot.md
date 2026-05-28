@@ -343,4 +343,21 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - CP-01 screenshot skipped (URL visible in shell output) — retake with URL cropped when bandwidth allows
 - `git push` requires PAT embedded in origin URL: `https://USERNAME:TOKEN@github.com/...`
 
+### Security Setup (append to SETUP-01)
+**Date:** 2026-05
+
+#### SSH — Local Machine → GitHub
+- Generated Ed25519 SSH key pair on local machine via `ssh-keygen -t ed25519`
+- Added public key to GitHub under Settings → SSH and GPG keys
+- Verified authentication via `ssh -T git@github.com`
+- Switched local flume repo remote URL from HTTPS to SSH (`git@github.com:CGJones99/flume.git`)
+- Private key stays on local machine, never transmitted
+
+#### PAT Secret — Replit → GitHub
+- Generated PAT with `repo` scope only, 90 day expiration
+- Stored PAT as encrypted Replit Secret under key `GITHUB_TOKEN`
+- Replit remote URL uses `$GITHUB_TOKEN` environment variable — token never hardcoded
+- Verified token expands correctly in shell and push succeeds
+- Revoked and regenerated PAT to invalidate any previously exposed values
+
 *End of snapshot. All decisions above are locked. Resume at: SETUP-02*

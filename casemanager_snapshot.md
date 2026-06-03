@@ -404,5 +404,30 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - Right-click for copy/paste in Replit shell — Ctrl+C kills process
 - CP-01 screenshot still outstanding
 
-*Resume at: SETUP-03 or PE-01 (policy engine)*
+## Session Update — 2026-06-03
+
+### Build State
+- SETUP-01: Shipped
+- SETUP-02: Shipped
+- Next: SETUP-03 → SETUP-04 → SETUP-05 → PE-01 → PE-02
+
+### Decisions made this session
+- Sequencing locked: Foundation cards first, then PE, then flows. Rationale: persona selector needed to test PE in context.
+- PE-02 kept as single card but acceptance criteria split into two testable functions: (1) rule selection correct for all 5 rules, (2) chain resolution returns correct named people.
+- Notion connected via MCP — board readable and writable from Claude directly. No need to paste card content into chat.
+
+### Infrastructure
+- SSH authentication set up in Replit shell. PAT revoked, shell history wiped. Git remote now uses SSH URL with no token in plain text.
+- generateSeed.mjs deployed and run successfully — 141 employees, 4 modules, 3 projects written to src/data/
+- MOD-003 delivery date manually adjusted to 2026-08-15 for clear early flag margin.
+
+### Open items before SETUP-03
+- Clear blocked flags on SETUP-03, PE-01, PE-02 in Notion — dependency was SETUP-02 which is now shipped
+- CP-01 screenshot still outstanding — retake with URL cropped
+
+### Parked
+- TM assignment for PM and above — null in seed data, noted for production
+- Senior consultant routing and partner opt-out rules — out of demo scope
+
+*Resume at: SETUP-03*
 ```

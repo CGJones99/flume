@@ -359,5 +359,50 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - Replit remote URL uses `$GITHUB_TOKEN` environment variable — token never hardcoded
 - Verified token expands correctly in shell and push succeeds
 - Revoked and regenerated PAT to invalidate any previously exposed values
+```markdown
 
-*End of snapshot. All decisions above are locked. Resume at: SETUP-02*
+## SETUP-02 — Seed Data Generation
+**Status:** Shipped  
+**Date:** 2026-06
+
+### Schemas (all locked)
+
+**Employee**
+`employee_id, name, staff_type, role, org_unit, region, hire_date, project_code, line_manager_id, talent_manager_id`
+
+**Module**
+`module_id, module_name, module_type, delivery_date, allowed_staff_type, dadmin_id, cancellation_unit_value`
+
+**Project**
+`project_id, project_name, practice`
+
+**Case**
+`case_id, initial_timestamp, requestor_id, module_id, case_type, rule_number, early_flag, requestor_reason, most_recent_action, most_recent_timestamp, current_status, project_code`
+
+**Event**
+`event_id, case_id, actor_id, event_type, sequence_number, timestamp, reason`
+
+### What was done
+- Designed five schemas: Employee, Module, Project, Case, Event
+- Defined org structure: 3 practices (Banking, Transportation, Restructuring), 3 support depts (Marketing, Human Capital, Design), Admin, Region Ops
+- 20 employees per practice and support dept, 20 in Admin, 1 Regional COO — 141 total
+- Wrote generateSeed.mjs — builds and wires all employee relationships, outputs employees.json, modules.json, projects.json to src/data/
+- Confirmed output: 141 employees, 4 modules, 3 projects
+- Spot checked reporting relationships, project codes, TM assignments
+- Manually adjusted MOD-003 delivery date to 2026-08-15 for clear early flag margin
+
+### Key decisions
+- Case and Event schemas designed but not generated — no cases exist until the app creates them
+- Flat approver columns rejected in favor of separate Event table for audit log
+- cancellation_unit_value on module record, count derived at query time — no cancellation field on case
+- TM assignment only wired to Consultant level for demo — PM and above have null TM. Parked for production
+- Senior consultant role routing and partner opt-out rules out of scope for demo — parked for production
+- org_unit unifies practice and dept into one field, keyed by staff type at runtime
+
+### Notes
+- SSH authentication set up in Replit shell, PAT revoked and shell history wiped
+- Right-click for copy/paste in Replit shell — Ctrl+C kills process
+- CP-01 screenshot still outstanding
+
+*Resume at: SETUP-03 or PE-01 (policy engine)*
+```

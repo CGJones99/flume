@@ -1,111 +1,279 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --bg-base:      #14091F;
+  --bg-elevated:  #1E1230;
+  --bg-card:      #251638;
+  --border-soft:  #3A2453;
+  --border-hard:  #5C3A85;
+  --text-primary: #EDE6F5;
+  --text-secondary:#B8A8D0;
+  --text-muted:   #7E6A99;
+  --cyan:         #7FE3D4;
+  --orange:       #FFB347;
+  --magenta:      #D946EF;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --font-display: 'Departure Mono', monospace;
+  --font-body:    'Geist', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+html, body, #root {
+  height: 100%;
 }
 
 body {
-  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
+/* ── Login ─────────────────────────────────────────────── */
+
+.login-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-base);
+}
+
+.login-container {
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  align-items: center;
+  gap: 52px;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+.login-wordmark {
+  font-family: var(--font-display);
+  font-size: 96px;
+  font-weight: normal;
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  line-height: 1;
+  text-transform: uppercase;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 320px;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.login-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.login-input {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hard);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 11px 14px;
+  outline: none;
+  border-radius: 0;
+  caret-color: var(--cyan);
+  width: 100%;
+  transition: border-color 0.1s;
+}
+
+.login-input:focus {
+  border-color: var(--cyan);
+}
+
+.login-input--error {
+  border-color: var(--orange);
+}
+
+.login-error {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--orange);
+  text-transform: uppercase;
+  min-height: 16px;
+}
+
+.login-button {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hard);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 0;
+  text-transform: uppercase;
+  transition: border-color 0.1s, color 0.1s;
+  margin-top: 6px;
+}
+
+.login-button:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* ── Role Dashboard ─────────────────────────────────────── */
+
+.dashboard-root {
+  min-height: 100vh;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dashboard-wordmark {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.dashboard-identity {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.dashboard-tiles {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 48px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 220px;
+  height: 200px;
+  border: 1px solid var(--border-soft);
+}
+
+.tile--active {
+  background: var(--bg-card);
+  border-color: var(--cyan);
+  cursor: pointer;
+  transition: box-shadow 0.1s;
+}
+
+.tile--active:hover {
+  box-shadow: 0 0 0 1px var(--cyan), inset 0 0 28px rgba(127, 227, 212, 0.07);
+}
+
+.tile--inactive {
+  background: var(--bg-elevated);
+  border-color: var(--border-soft);
+  cursor: default;
+  opacity: 0.38;
+}
+
+.tile-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.tile--active .tile-label {
+  color: var(--text-primary);
+}
+
+.tile--inactive .tile-label {
+  color: var(--text-muted);
+}
+
+/* ── Stubs ──────────────────────────────────────────────── */
+
+.stub-root {
+  min-height: 100vh;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.stub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.stub-wordmark {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
+.stub-back {
+  background: none;
+  border: 1px solid var(--border-hard);
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 0;
+  text-transform: uppercase;
+  transition: border-color 0.1s, color 0.1s;
+}
+
+.stub-back:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.stub-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.stub-title {
+  font-family: var(--font-display);
+  font-size: 48px;
+  letter-spacing: 0.25em;
+  color: var(--text-primary);
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.stub-note {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
 }

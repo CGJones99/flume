@@ -429,5 +429,31 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - TM assignment for PM and above — null in seed data, noted for production
 - Senior consultant routing and partner opt-out rules — out of demo scope
 
-*Resume at: SETUP-03*
 ```
+
+## SETUP-03 — eID login / persona selector
+**Status:** Shipped  
+**Date:** 2026-06
+
+### What was done
+- Installed react-router-dom for client-side routing
+- Added Google Fonts CDN to index.html (Departure Mono, Geist, JetBrains Mono) and updated title to FLUME
+- Replaced Vite default styles with full Flume design system in index.css (tokens, typography, base reset)
+- Built AuthContext (src/context/AuthContext.jsx) — in-memory user state, login/logout, useAuth hook
+- Built Login screen (src/pages/Login.jsx) — FLUME wordmark, eID input, Enter/button submit, validates against employees.json, IDENTITY NOT FOUND error state
+- Built RoleDashboard (src/pages/RoleDashboard.jsx) — three tiles with independent activation logic, active/inactive visual states, auth guard
+- Built three stub screens (Requestor, Approver, DeptAdmin) — role label, back button to dashboard, auth guard
+- Wired routing in App.jsx: /, /dashboard, /requestor, /approver, /admin
+
+### Key decisions
+- dAdmin is a masterkey role — all three tiles (REQUESTOR, APPROVER, DEPT ADMIN) activate for dAdmin employees. Rationale: dAdmin needs full system visibility for demo walkthrough
+- APPROVER tile activates for: PM, Principal, Partner, Practice Head, Line Manager, Dept Leader, Regional COO, Talent Manager — checked independently, not mutually exclusive with other tiles
+- Auth state is in-memory React context only — no localStorage or sessionStorage. Re-login required on page refresh, acceptable for demo
+- eID input normalizes to uppercase before lookup — EMP-0001 and emp-0001 both resolve correctly
+
+### Notes
+- MOD-003 delivery date reset to 2026-08-15 (had drifted to 2026-07-10 during Replit sync)
+- src/data/ files pulled from Replit and pushed to GitHub at start of session
+- Local dev uses HTTPS remote (SSH agent not persistent across shell sessions on Windows)
+
+*Resume at: SETUP-04*

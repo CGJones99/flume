@@ -1,0 +1,38 @@
+[
+  {
+    "module_id": "MOD-001",
+    "module_name": "Q3 Analyst Allocation",
+    "module_type": "A",
+    "delivery_date": "2026-07-15",
+    "allowed_staff_type": "Consultant",
+    "cancellation_unit_value": 4500,
+    "dadmin_id": "EMP-0122"
+  },
+  {
+    "module_id": "MOD-002",
+    "module_name": "Americas Support Bench",
+    "module_type": "A",
+    "delivery_date": "2026-08-01",
+    "allowed_staff_type": "Support",
+    "cancellation_unit_value": 2800,
+    "dadmin_id": "EMP-0123"
+  },
+  {
+    "module_id": "MOD-003",
+    "module_name": "H2 Flex Pool",
+    "module_type": "B",
+    "delivery_date": "2026-07-10",
+    "allowed_staff_type": "Consultant",
+    "cancellation_unit_value": 6200,
+    "dadmin_id": "EMP-0124"
+  },
+  {
+    "module_id": "MOD-004",
+    "module_name": "Ops Surge Capacity",
+    "module_type": "B",
+    "delivery_date": "2026-06-20",
+    "allowed_staff_type": "Support",
+    "cancellation_unit_value": 3100,
+    "dadmin_id": "EMP-0125"
+  }
+]

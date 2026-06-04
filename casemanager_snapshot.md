@@ -456,4 +456,24 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - src/data/ files pulled from Replit and pushed to GitHub at start of session
 - Local dev uses HTTPS remote (SSH agent not persistent across shell sessions on Windows)
 
-*Resume at: SETUP-04*
+## SETUP-04 — Navigation shell and routing
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Added two layout components: PortfolioLayout (persistent top nav) and DemoLayout (auth scope + escape hatch)
+- Portfolio routes: / (Problem), /approach, /decisions, /build — each renders a placeholder page
+- Demo routes moved under /demo subtree: /demo, /demo/dashboard, /demo/requestor, /demo/approver, /demo/admin
+- AuthProvider moved out of App root and into DemoLayout — auth state is fully scoped to /demo/*
+- Portfolio nav uses NavLink with active state (cyan underline on active route)
+- "← RETURN TO PRD" escape link fixed bottom-left on all /demo routes
+
+### Key decisions
+- AuthProvider scoped to DemoLayout, not App root — zero auth contact with portfolio routes
+- Escape hatch text: "← RETURN TO PRD" (not "Back to portfolio")
+- Escape hatch placement: fixed bottom-left — avoids conflict with existing demo page headers (top-right)
+
+### Parked
+- Portfolio nav visual polish — layout and functionality confirmed, styling to revisit before demo ships
+
+*Resume at: SETUP-05*

@@ -7,7 +7,7 @@ export default function RequestorStub() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user) navigate('/', { replace: true })
+    if (!user) navigate('/demo', { replace: true })
   }, [user, navigate])
 
   if (!user) return null
@@ -16,7 +16,7 @@ export default function RequestorStub() {
     <div className="stub-root">
       <div className="stub-header">
         <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/dashboard')}>
+        <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
           ← DASHBOARD
         </button>
       </div>

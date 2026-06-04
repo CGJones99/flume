@@ -19,7 +19,7 @@ export default function Login() {
       return
     }
     login(employee)
-    navigate('/dashboard')
+    navigate('/demo/dashboard')
   }
 
   return (

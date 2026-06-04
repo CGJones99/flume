@@ -1,5 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
+import PortfolioLayout from './layouts/PortfolioLayout'
+import DemoLayout from './layouts/DemoLayout'
+import Problem from './pages/portfolio/Problem'
+import Approach from './pages/portfolio/Approach'
+import Decisions from './pages/portfolio/Decisions'
+import Build from './pages/portfolio/Build'
 import Login from './pages/Login'
 import RoleDashboard from './pages/RoleDashboard'
 import RequestorStub from './pages/stubs/RequestorStub'
@@ -8,16 +13,22 @@ import DeptAdminStub from './pages/stubs/DeptAdminStub'
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/"          element={<Login />} />
-          <Route path="/dashboard" element={<RoleDashboard />} />
-          <Route path="/requestor" element={<RequestorStub />} />
-          <Route path="/approver"  element={<ApproverStub />} />
-          <Route path="/admin"     element={<DeptAdminStub />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<PortfolioLayout />}>
+          <Route index element={<Problem />} />
+          <Route path="approach"  element={<Approach />} />
+          <Route path="decisions" element={<Decisions />} />
+          <Route path="build"     element={<Build />} />
+        </Route>
+        <Route path="demo" element={<DemoLayout />}>
+          <Route index          element={<Login />} />
+          <Route path="dashboard" element={<RoleDashboard />} />
+          <Route path="requestor" element={<RequestorStub />} />
+          <Route path="approver"  element={<ApproverStub />} />
+          <Route path="admin"     element={<DeptAdminStub />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }

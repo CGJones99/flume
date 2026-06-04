@@ -12,7 +12,7 @@ export default function RoleDashboard() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user) navigate('/', { replace: true })
+    if (!user) navigate('/demo', { replace: true })
   }, [user, navigate])
 
   if (!user) return null
@@ -22,19 +22,19 @@ export default function RoleDashboard() {
       id: 'requestor',
       label: 'REQUESTOR',
       active: true,
-      path: '/requestor',
+      path: '/demo/requestor',
     },
     {
       id: 'approver',
       label: 'APPROVER',
       active: APPROVER_ROLES.includes(user.role) || user.role === 'dAdmin',
-      path: '/approver',
+      path: '/demo/approver',
     },
     {
       id: 'dadmin',
       label: 'DEPT ADMIN',
       active: user.role === 'dAdmin',
-      path: '/admin',
+      path: '/demo/admin',
     },
   ]
 

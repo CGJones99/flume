@@ -476,4 +476,18 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 ### Parked
 - Portfolio nav visual polish — layout and functionality confirmed, styling to revisit before demo ships
 
-*Resume at: SETUP-05*
+## SETUP-05 — Design system implementation
+**Status:** Shipped (as part of SETUP-03)
+**Date:** 2026-06
+
+### What was done
+- CSS custom properties for full color palette (bg-base, bg-elevated, bg-card, borders, text, cyan, orange, magenta)
+- Type stack loaded via Google Fonts CDN: Departure Mono (display/labels), Geist (body), JetBrains Mono (metadata/code)
+- Base reset (box-sizing, margin/padding, font smoothing) and body defaults
+- All tokens in use across Login, RoleDashboard, and stub screens from SETUP-03 onward
+
+### Key decisions
+- Shipped as part of SETUP-03 — design system was required to build the login screen, so the work happened together
+- No formal spacing scale defined — ad-hoc values in component CSS, consistent with PRD which specifies no spacing system
+
+*Resume at: PE-01*

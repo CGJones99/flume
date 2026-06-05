@@ -490,4 +490,24 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - Shipped as part of SETUP-03 — design system was required to build the login screen, so the work happened together
 - No formal spacing scale defined — ad-hoc values in component CSS, consistent with PRD which specifies no spacing system
 
-*Resume at: PE-01*
+## PE-01 — Early Flag Calculation
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Created `src/logic/` directory to hold policy engine functions separate from UI
+- Built `calculateEarlyFlag(module, submissionTimestamp)` in `src/logic/earlyFlag.js`
+- Returns `null` for type A modules (no calculation), `true` for type B with delivery ≥ 28 days from submission, `false` for type B with delivery < 28 days
+- Both sides normalised to local midnight before comparison to eliminate DST / time-of-day drift
+- Self-contained test block (`runEarlyFlagTests`) covers all three branches plus the 28-day boundary explicitly — runs via `node src/logic/earlyFlag.js`, 4/4 passing
+
+### Key decisions
+- Pure function with no UI dependencies — takes a module object and a timestamp, returns a flag value. Intentionally kept isolated so PE-02 can call it directly without touching any component state
+- Local midnight normalisation on both sides: delivery_date parsed as `new Date(year, month-1, day)` (local), submission timestamp floored to midnight via `setHours(0,0,0,0)` — eliminates sub-day drift without requiring UTC gymnastics
+- `Math.round` on the ms-to-days conversion handles DST transitions (23hr or 25hr days) cleanly at the boundary
+
+### Notes
+- Test block auto-runs on import — remove before wiring to submission flow (flagged with TODO comment in file)
+- Submission timestamp uses `new Date()` client-side — known limitation, logged in Production Notes (Timestamp / Clock Trust)
+
+*Resume at: PE-02*

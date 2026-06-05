@@ -510,4 +510,47 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - Test block auto-runs on import — remove before wiring to submission flow (flagged with TODO comment in file)
 - Submission timestamp uses `new Date()` client-side — known limitation, logged in Production Notes (Timestamp / Clock Trust)
 
-*Resume at: PE-02*
+## PE-02a — selectRule
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Created `src/engine/` directory to hold the policy engine separate from `src/logic/`
+- Built `selectRule(staffType, moduleType, caseType, earlyFlag)` in `src/engine/policyEngine.js`
+- Rule 5 (early flag bypass) checked first — earlyFlag true + moduleType B returns 5 regardless of staffType or caseType
+- Rules 1–4 resolve from staffType + caseType combinations
+- Invalid combinations throw with a descriptive error message
+- Test block covers all five rules (8 cases total) plus one invalid input throw — 8/8 passing via `node src/engine/policyEngine.js`
+
+### Key decisions
+- Placed in `src/engine/` rather than `src/logic/` — engine is a distinct layer from utility logic (earlyFlag). The engine will grow to import data; logic functions stay pure/stateless
+- Rule 5 guard is first to match the policy matrix bypass intent — early flag takes precedence over all staff/case type combinations
+- Function is pure — no imports, no side effects, composable with PE-02b
+- **PE-02 was consciously split into PE-02a (selectRule) and PE-02b (data layer + chain resolver).** Original card was a single M but contained two independently testable functions with different concerns — rule selection is pure logic, chain resolution requires data access. Splitting made each piece verifiable in isolation before wiring them together.
+
+---
+
+## PE-02b — resolveApproverData + resolveChain
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Added JSON imports (`employees.json`, `modules.json`) at the module level in `src/engine/policyEngine.js` — compatible with Vite and Node v24 via `with { type: 'json' }` import assertion
+- Built `resolveApproverData(requestorId, moduleId)` — walks the requestor's `line_manager_id` chain upward to collect the full management chain, resolves the talent manager via `talent_manager_id`, and pulls the dAdmin from the module record. No raw employee records exit the function.
+- Returns `{ staffType, managementChain, talentManager, dAdmin }` — only name and role label per person
+- Built `resolveChain(ruleNumber, resolverData)` — pure function, takes rule number and the output of `resolveApproverData`, returns ordered array of `{ fullName, roleLabel, isStandIn }`
+- Coverage gap: any unresolvable chain slot or null talent manager substitutes dAdmin with `isStandIn: true`; dAdmin always appears as the final entry — if dAdmin stands in earlier, both entries are kept (distinct decision steps)
+- Test block covers all five rules plus one fabricated coverage gap (null TM on rule 2) — all outputs verified against policy matrix
+
+### Key decisions
+- `resolveApproverData` owns all data access; `resolveChain` is pure — clean separation means chain logic can be tested without touching the file system
+- Management chain built by walking `line_manager_id` upward with a cycle guard — order reflects actual org structure, not hardcoded role assumptions. If the seed data hierarchy changes, chain resolution adapts automatically
+- Talent manager resolved via `talent_manager_id` field on the requestor record (direct pointer), not by role search — deterministic, no ambiguity for employees who share a TM
+- `isStandIn: true` chosen over omitting the slot — the UI needs to know a gap occurred and who is covering it, without re-deriving that information downstream
+- Employee IDs do not appear in the output array — chain is safe to pass directly to UI components
+
+### Notes
+- Test block auto-runs on `node src/engine/policyEngine.js` — remove both PE-02a and PE-02b test blocks before wiring to submission flow
+- `resolveApproverData` throws on missing requestor, module, or dAdmin — hard errors, not coverage gaps. Coverage gap only applies to mid-chain intermediary roles
+
+*Resume at: Requestor Flow. Card order within S-R1 through S-R6 not yet decided — determine sequencing before starting the block.*

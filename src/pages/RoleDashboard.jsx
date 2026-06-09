@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useCaseStore } from '../context/CaseStoreContext'
 
 const APPROVER_ROLES = [
   'PM', 'Principal', 'Partner', 'Practice Head',
@@ -8,8 +9,9 @@ const APPROVER_ROLES = [
 ]
 
 export default function RoleDashboard() {
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { user }          = useAuth()
+  const { cases }         = useCaseStore()
+  const navigate          = useNavigate()
 
   useEffect(() => {
     if (!user) navigate('/demo', { replace: true })
@@ -17,24 +19,36 @@ export default function RoleDashboard() {
 
   if (!user) return null
 
+  const isApprover = APPROVER_ROLES.includes(user.role) || user.role === 'dAdmin'
+
+  const pendingForUser = isApprover
+    ? cases.filter(c =>
+        c.current_status === 'pending' &&
+        c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
+      ).length
+    : 0
+
   const tiles = [
     {
-      id: 'requestor',
-      label: 'REQUESTOR',
+      id:     'requestor',
+      label:  'REQUESTOR',
+      action: 'REQUEST A CANCELLATION',
       active: true,
-      path: '/demo/requestor/dashboard',
+      path:   '/demo/requestor/dashboard',
     },
     {
-      id: 'approver',
-      label: 'APPROVER',
-      active: APPROVER_ROLES.includes(user.role) || user.role === 'dAdmin',
-      path: '/demo/approver',
+      id:     'approver',
+      label:  'APPROVER',
+      action: 'REVIEW PENDING DECISIONS',
+      active: isApprover,
+      path:   '/demo/approver',
     },
     {
-      id: 'dadmin',
-      label: 'DEPT ADMIN',
+      id:     'dadmin',
+      label:  'DEPT ADMIN',
+      action: 'MANAGE MODULES',
       active: user.role === 'dAdmin',
-      path: '/demo/admin',
+      path:   '/demo/admin',
     },
   ]
 
@@ -47,15 +61,32 @@ export default function RoleDashboard() {
         </span>
       </div>
       <div className="dashboard-tiles">
-        {tiles.map(tile => (
-          <div
-            key={tile.id}
-            className={`tile ${tile.active ? 'tile--active' : 'tile--inactive'}`}
-            onClick={() => tile.active && navigate(tile.path)}
-          >
-            <span className="tile-label">{tile.label}</span>
-          </div>
-        ))}
+        {tiles.map(tile => {
+          const isPulse = tile.id === 'approver' && tile.active && pendingForUser > 0
+          const classes = [
+            'tile',
+            tile.active ? 'tile--active' : 'tile--inactive',
+            isPulse ? 'tile--pulse' : '',
+          ].filter(Boolean).join(' ')
+
+          return (
+            <div
+              key={tile.id}
+              className={classes}
+              onClick={() => tile.active && navigate(tile.path)}
+            >
+              <span className="tile-label">{tile.label}</span>
+              <span className="tile-action">{tile.action}</span>
+              {isPulse && (
+                <span className="tile-counter">
+                  {pendingForUser === 1
+                    ? '1 CASE AWAITING REVIEW'
+                    : `${pendingForUser} CASES AWAITING REVIEW`}
+                </span>
+              )}
+            </div>
+          )
+        })}
       </div>
     </div>
   )

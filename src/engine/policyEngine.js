@@ -43,9 +43,9 @@ export function selectRule(staffType, moduleType, caseType, earlyFlag) {
  * @param {string} moduleId     module_id of the submitted case
  * @returns {{
  *   staffType: string,
- *   managementChain: Array<{fullName: string, roleLabel: string}>,
- *   talentManager: {fullName: string, roleLabel: string} | null,
- *   dAdmin: {fullName: string, roleLabel: string}
+ *   managementChain: Array<{fullName: string, roleLabel: string, eID: string}>,
+ *   talentManager: {fullName: string, roleLabel: string, eID: string} | null,
+ *   dAdmin: {fullName: string, roleLabel: string, eID: string}
  * }}
  */
 export function resolveApproverData(requestorId, moduleId) {
@@ -66,18 +66,18 @@ export function resolveApproverData(requestorId, moduleId) {
     visited.add(currentId);
     const emp = empMap.get(currentId);
     if (!emp) break;
-    managementChain.push({ fullName: emp.name, roleLabel: emp.role });
+    managementChain.push({ fullName: emp.name, roleLabel: emp.role, eID: emp.employee_id });
     currentId = emp.line_manager_id;
   }
 
   // Talent Manager — may be null for senior roles (PM and above have no TM in seed data)
   const tmEmp = requestor.talent_manager_id ? empMap.get(requestor.talent_manager_id) : null;
-  const talentManager = tmEmp ? { fullName: tmEmp.name, roleLabel: tmEmp.role } : null;
+  const talentManager = tmEmp ? { fullName: tmEmp.name, roleLabel: tmEmp.role, eID: tmEmp.employee_id } : null;
 
   // dAdmin from the module record
   const dAdminEmp = empMap.get(module.dadmin_id);
   if (!dAdminEmp) throw new Error(`resolveApproverData: dAdmin not found — ${module.dadmin_id}`);
-  const dAdmin = { fullName: dAdminEmp.name, roleLabel: 'Dept Admin' };
+  const dAdmin = { fullName: dAdminEmp.name, roleLabel: 'Dept Admin', eID: dAdminEmp.employee_id };
 
   return { staffType: requestor.staff_type, managementChain, talentManager, dAdmin };
 }
@@ -96,15 +96,13 @@ export function resolveApproverData(requestorId, moduleId) {
  * dAdmin always appears as the final entry. If dAdmin stands in earlier,
  * both entries are included — they represent distinct decision steps.
  *
- * Employee IDs do not appear in the output.
- *
  * @param {number} ruleNumber   1–5
  * @param {{
- *   managementChain: Array<{fullName: string, roleLabel: string}>,
- *   talentManager: {fullName: string, roleLabel: string} | null,
- *   dAdmin: {fullName: string, roleLabel: string}
+ *   managementChain: Array<{fullName: string, roleLabel: string, eID: string}>,
+ *   talentManager: {fullName: string, roleLabel: string, eID: string} | null,
+ *   dAdmin: {fullName: string, roleLabel: string, eID: string}
  * }} resolverData  Output of resolveApproverData
- * @returns {Array<{fullName: string, roleLabel: string, isStandIn: boolean}>}
+ * @returns {Array<{fullName: string, roleLabel: string, eID: string, isStandIn: boolean}>}
  */
 export function resolveChain(ruleNumber, resolverData) {
   const { managementChain, talentManager, dAdmin } = resolverData;
@@ -113,17 +111,17 @@ export function resolveChain(ruleNumber, resolverData) {
   function slot(index) {
     const entry = managementChain[index];
     return entry
-      ? { fullName: entry.fullName, roleLabel: entry.roleLabel, isStandIn: false }
-      : { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, isStandIn: true };
+      ? { fullName: entry.fullName, roleLabel: entry.roleLabel, eID: entry.eID, isStandIn: false }
+      : { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, eID: dAdmin.eID, isStandIn: true };
   }
 
   function tmSlot() {
     return talentManager
-      ? { fullName: talentManager.fullName, roleLabel: talentManager.roleLabel, isStandIn: false }
-      : { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, isStandIn: true };
+      ? { fullName: talentManager.fullName, roleLabel: talentManager.roleLabel, eID: talentManager.eID, isStandIn: false }
+      : { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, eID: dAdmin.eID, isStandIn: true };
   }
 
-  const dAdminFinal = { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, isStandIn: false };
+  const dAdminFinal = { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, eID: dAdmin.eID, isStandIn: false };
 
   switch (ruleNumber) {
     case 1: // Consultant + Business: PM → Principal → Partner → Practice Head → dAdmin

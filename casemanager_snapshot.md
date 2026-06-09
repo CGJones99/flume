@@ -1,9 +1,9 @@
 # CaseManager — PRD Snapshot & Context Handoff
 
-**Status:** PRD complete, demo build pending  
-**Date:** May 2026  
+**Status:** Build in progress  
+**Date:** 2026-06-09  
 **Author:** [Your name]  
-**Version:** 0.1 — pre-build
+**Version:** 0.4 — S-R3 shipped
 
 ---
 
@@ -637,4 +637,79 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - `replace: true` is not used on the confirm navigation — the requestor should be able to hit back from the confirmation screen to review their form before it is finalized (case write happens at S-R3, not here)
 - Confirmation screen shipped as part of S-R2 because it is the natural end of the form flow and cannot reasonably be split from it — the form with no post-submit feedback would not constitute a shippable state
 
-*Resume at: S-R3 — Auto-routing on submission.*
+---
+
+## S-R3 — Auto-routing on submission
+**Status:** Shipped  
+**Date:** 2026-06-09
+
+### What was done
+- Updated `appendEvent` in `CaseStoreContext.jsx` to auto-generate `event_id` internally — callers pass event data without an ID; the module counter stamps it
+- Moved `nextEventId()` outside the `setEvents` updater function — updaters must be pure; React StrictMode double-invokes them in dev, which caused the counter to skip a value (EVT-000002 lost, notification landed as EVT-000003). Moving ID generation outside the updater fixed the skip
+- Wired `useCaseStore` into `CancellationStub.jsx` — on form submit, `handleSubmit` now:
+  1. Maps the camelCase SubmissionForm payload to locked snake_case case schema fields and calls `submitCase` (returns `case_id`)
+  2. Calls `appendEvent` with `actor_id: 'SYSTEM'`, `event_type: 'notification_sent'`, `sequence_number: 1`, reason: `"Notification sent to [first approver full name] ([role label]). Production: Microsoft Teams."` — first approver pulled directly from the already-resolved `approverChain` in the payload
+  3. Navigates to the confirmation screen with the original camelCase payload in `location.state`
+- `SubmissionConfirmation.jsx` untouched — continues reading from `location.state` only
+- Verified in browser console: one case record (`current_status: 'pending'`, `current_approver_index: 0`), two events (sequence 0 submission + sequence 1 SYSTEM notification with correct first approver name, role label, and Teams callout)
+
+### Key decisions
+- `appendEvent` auto-generates `event_id` rather than requiring callers to import the counter — consistent with how `submitCase` handles ID generation, keeps the counter fully encapsulated
+- Payload mapping from camelCase (SubmissionForm output) to snake_case (case schema) is the responsibility of `CancellationStub.handleSubmit`, not the form — SubmissionForm is unchanged
+- `approver_chain` stored on the case record alongside the locked schema fields — required for approver flow routing (`current_approver_index` indexes into it)
+- No UI changes — S-R3 is write layer only. Console-verified. Visual surface for event history ships in S-R4
+
+---
+
+## Session Update — 2026-06-09
+
+### Build State
+- SETUP-01 through SETUP-07: Shipped
+- PE-01, PE-02a, PE-02b: Shipped
+- S-R1, S-R2, S-R3: Shipped
+- Next: S-R4 → S-R5 → Approver Flow → dAdmin Flow
+
+### Decisions made this session
+
+#### Notification inbox killed (NI-01 → Won't Do)
+Mock email inbox removed from scope. Two reasons: theater risk (a recruiter immediately reads a fake email client as simulated, not functional) and confusion risk during seeded demo walkthrough (inbox looked like a distinct product surface, not a routing feature). Replaced by system event entries written to the audit log at every routing step — `actor_id: 'SYSTEM'`, `event_type: 'notification_sent'`, reason containing the target approver's full name, role label, and a forward-looking callout: "Production: Microsoft Teams." This keeps the notification story honest without simulating a channel. Logged on PO-02 as decision 4.
+
+#### Audit log display distributed across persona dashboard cards (AL-02 → Won't Do)
+AL-02 was a standalone card for audit log display on case views. Killed and redistributed. Each persona dashboard now owns its own role-filtered display:
+- S-R4 (requestor dashboard): name, role, timestamp, event type, reasoning. No eIDs. System notification events show Teams callout.
+- S-A1 (approver case view): same rules as requestor. Prior approver reasoning visible — this is the social pressure anti-rubber-stamp mechanism.
+- S-D2 (dAdmin view): full log including eIDs. Only role where eIDs render.
+
+eID display rules locked:
+- eIDs never render outside dAdmin audit log view
+- Requestor's own eID visible only on signed-in identity display and case submission summary
+- All other views: name + role + timestamp + event type only
+
+#### AL-01 rescoped to verification checkpoint (XS)
+Write layer is no longer standalone work. Submission event (seq 0) and system notification event (seq 1) write in S-R3. Approver decision events write in S-A3. dAdmin signoff event writes in S-D4. AL-01 is now a verification checkpoint only: confirm event writes land correctly across all flow cards before CP-02. No new code.
+
+#### S-A1 rescoped and resized (S → M)
+Original scope was mock inbox with direct case link — killed with NI-01. Card fully rewritten. Now owns: (1) pulse animation and pending case counter on the APPROVER role dashboard tile when cases are awaiting the authenticated user's approval, and (2) role-filtered audit log display on the approver case view. Pending count derived at render time by scanning cases where `current_approver_index` in the resolved chain matches the authenticated user's eID.
+
+#### S-D2 rescoped
+Absorbs dAdmin-side audit log display from AL-02. Full log including eIDs. Pulse + counter on DEPT ADMIN tile for cases awaiting final signoff. Same tile pattern as S-A1.
+
+#### Case store persistence — intentionally in-memory (logged on PO-02 as decision 5)
+Case and event state lives in React context only. No localStorage, sessionStorage, or external database. Rationale: each recruiter running the demo gets a clean isolated state with no risk of stale data from a prior session or conflicts from a concurrent viewer. In-memory state survives persona switches (client-side navigation, no page reload) cleanly. Known limitation: full page refresh resets all case state — flagged in demo README. Production path: replace in-memory store with real database; context layer acts as interface boundary so the swap requires no changes to consuming components.
+
+#### S-R3 scope clarified
+Write layer only. On submission: (1) write case record to store via `submitCase`, (2) confirm submission event writes as sequence 0, (3) write system notification event as sequence 1 via `appendEvent`. No UI changes. No dashboard work. Console-verified only until S-R4 ships. Inbox reference removed from card — old acceptance criteria referenced NI-01 inbox stub which is now killed.
+
+### Notion board changes
+- NI-01: Won't Do
+- AL-02: Won't Do
+- AL-01: Rescoped to XS verification checkpoint, unblocked
+- S-R4: Implementation notes and acceptance test updated to include role-filtered audit log display and Teams callout
+- S-A1: Fully rewritten, resized S → M
+- S-D2: Rescoped to include pulse/counter tile and full dAdmin audit log
+- PO-02: Decisions 4 (inbox kill) and 5 (in-memory persistence) added
+
+### Parked
+- README draft (demo instructions, session persistence warning, suggested test flows) — defer until all flow cards shipped
+
+*Resume at: S-R4 — Requestor status dashboard.*

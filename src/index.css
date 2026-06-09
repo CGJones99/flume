@@ -326,16 +326,16 @@ body {
 
 .tile-wrap {
   clip-path: polygon(
-    20px 0%,
-    calc(100% - 20px) 0%,
-    100% 20px,
-    100% calc(100% - 20px),
-    calc(100% - 20px) 100%,
-    20px 100%,
-    0% calc(100% - 20px),
-    0% 20px
+    24px 0%,
+    calc(100% - 24px) 0%,
+    100% 24px,
+    100% calc(100% - 24px),
+    calc(100% - 24px) 100%,
+    24px 100%,
+    0% calc(100% - 24px),
+    0% 24px
   );
-  padding: 1px;
+  padding: 2px;
   width: 240px;
   height: 210px;
 }
@@ -357,6 +357,22 @@ body {
   align-items: center;
   justify-content: center;
   gap: 14px;
+  /*
+   * Inner chamfer at 17px on a 2px-padded outer (24px chamfer):
+   * inner diagonal sits at x+y=21 vs outer at x+y=24 → ~2px perp gap,
+   * matching the 2px straight-edge padding and making the border visible
+   * along all 8 edges including the diagonal cuts.
+   */
+  clip-path: polygon(
+    17px 0%,
+    calc(100% - 17px) 0%,
+    100% 17px,
+    100% calc(100% - 17px),
+    calc(100% - 17px) 100%,
+    17px 100%,
+    0% calc(100% - 17px),
+    0% 17px
+  );
 }
 
 .tile-wrap--active .tile {
@@ -387,12 +403,12 @@ body {
 
 .tile-action {
   font-family: var(--font-display);
-  font-size: 13px;
-  letter-spacing: 0.18em;
+  font-size: 16px;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   text-align: center;
   padding: 0 24px;
-  line-height: 1.65;
+  line-height: 1.55;
 }
 
 .tile-wrap--active .tile-action {

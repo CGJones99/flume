@@ -17,7 +17,7 @@ export default function SubmissionConfirmation() {
 
   useEffect(() => {
     if (!user)    navigate('/demo', { replace: true })
-    if (!payload) navigate('/demo/requestor', { replace: true })
+    if (!payload) navigate('/demo/requestor/dashboard', { replace: true })
   }, [user, payload, navigate])
 
   if (!user || !payload) return null
@@ -42,12 +42,14 @@ export default function SubmissionConfirmation() {
     <div className="sc-root">
       <div className="stub-header">
         <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/requestor')}>
-          ← MODULES
+        <button className="stub-back" onClick={() => navigate('/demo/requestor/dashboard')}>
+          ← DASHBOARD
         </button>
       </div>
 
       <div className="sc-content">
+
+        <h1 className="sc-page-title">Case Summary</h1>
 
         <div className="sc-status-bar">
           <span className="sc-status-label">Status</span>

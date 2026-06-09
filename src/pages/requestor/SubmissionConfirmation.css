@@ -17,6 +17,17 @@
   width: 100%;
 }
 
+/* Page title */
+
+.sc-page-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: normal;
+  letter-spacing: 0.25em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}
+
 /* Status bar */
 
 .sc-status-bar {

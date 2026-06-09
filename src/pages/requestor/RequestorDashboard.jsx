@@ -60,7 +60,7 @@ export default function RequestorDashboard() {
       <div className="stub-header">
         <span className="stub-wordmark">FLUME</span>
         <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
-          ← DASHBOARD
+          ← ROLE SELECT
         </button>
       </div>
 
@@ -81,9 +81,12 @@ export default function RequestorDashboard() {
             <table className="rd-table">
               <thead>
                 <tr>
+                  <th></th>
                   <th>CASE ID</th>
                   <th>MODULE</th>
                   <th>TYPE</th>
+                  <th>SUBMITTED</th>
+                  <th>DELIVERY</th>
                   <th>STATUS</th>
                   <th>CURRENT HOLDER</th>
                 </tr>
@@ -100,9 +103,14 @@ export default function RequestorDashboard() {
                         className={`rd-case-row${expanded ? ' rd-case-row--open' : ''}`}
                         onClick={() => toggleExpand(c.case_id)}
                       >
+                        <td className="rd-td rd-td--expander">
+                          <span className="rd-expander">{expanded ? '−' : '+'}</span>
+                        </td>
                         <td className="rd-td rd-td--id">{c.case_id}</td>
                         <td className="rd-td">{mod?.module_name ?? c.module_id}</td>
                         <td className="rd-td">{c.case_type}</td>
+                        <td className="rd-td rd-td--date">{formatTs(c.initial_timestamp)}</td>
+                        <td className="rd-td rd-td--date">{mod?.delivery_date ?? '—'}</td>
                         <td className="rd-td">
                           <span className={`rd-pill rd-pill--${c.current_status}`}>
                             {c.current_status.toUpperCase()}
@@ -122,7 +130,7 @@ export default function RequestorDashboard() {
 
                       {expanded && (
                         <tr className="rd-log-row">
-                          <td colSpan={5} className="rd-log-cell">
+                          <td colSpan={8} className="rd-log-cell">
                             <div className="rd-log">
                               <p className="rd-log-heading">AUDIT LOG</p>
                               <div className="rd-log-entries">

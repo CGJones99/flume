@@ -120,40 +120,49 @@ body {
 
 /* ── Demo Escape Hatch ──────────────────────────────────── */
 
-.demo-back-link {
+/*
+ * Chamfered outline — clip-path gives the eight-sided shape; bg-elevated fill
+ * against bg-base page creates the visible form. Border shows on straight edges;
+ * diagonal cuts are transparent, making the chamfer readable without a diagonal stroke.
+ */
+.demo-back-link,
+.demo-logout-btn {
   position: fixed;
-  bottom: 20px;
-  left: 24px;
+  bottom: 28px;
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--text-muted);
-  text-decoration: none;
   text-transform: uppercase;
-  transition: color 0.1s;
+  text-decoration: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hard);
+  padding: 10px 22px;
+  cursor: pointer;
+  clip-path: polygon(
+    8px   0%,
+    calc(100% - 8px) 0%,
+    100%  8px,
+    100%  calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    8px   100%,
+    0%    calc(100% - 8px),
+    0%    8px
+  );
+  transition: border-color 0.1s, color 0.1s;
 }
 
-.demo-back-link:hover {
-  color: var(--cyan);
+.demo-back-link {
+  left: 28px;
 }
 
 .demo-logout-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 24px;
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.1s;
+  right: 28px;
 }
 
+.demo-back-link:hover,
 .demo-logout-btn:hover {
+  border-color: var(--cyan);
   color: var(--cyan);
 }
 
@@ -602,6 +611,29 @@ body {
 
 .rd-td--id {
   color: var(--text-primary);
+}
+
+.rd-td--date {
+  color: var(--text-muted);
+}
+
+.rd-td--expander {
+  width: 28px;
+  padding-right: 0;
+  text-align: center;
+}
+
+.rd-expander {
+  font-family: var(--font-display);
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1;
+  user-select: none;
+}
+
+.rd-case-row:hover .rd-expander,
+.rd-case-row--open .rd-expander {
+  color: var(--cyan);
 }
 
 .rd-case-row {

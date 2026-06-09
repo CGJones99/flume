@@ -553,4 +553,88 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 - Test block auto-runs on `node src/engine/policyEngine.js` — remove both PE-02a and PE-02b test blocks before wiring to submission flow
 - `resolveApproverData` throws on missing requestor, module, or dAdmin — hard errors, not coverage gaps. Coverage gap only applies to mid-chain intermediary roles
 
-*Resume at: Requestor Flow. Card order within S-R1 through S-R6 not yet decided — determine sequencing before starting the block.*
+## SETUP-06 — Case & Event write layer
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Created `src/context/CaseStoreContext.jsx` — in-memory runtime store for cases and events
+- Module-level counters with zero-padded ID generators: `nextCaseId()` → `CASE-0001`, `nextEventId()` → `EVT-000001`
+- `submitCase(caseData)` — generates case_id, stamps `initial_timestamp` and `most_recent_timestamp`, sets `current_status: 'pending'` and `current_approver_index: 0`, writes to cases array; simultaneously writes a `submission` event (sequence 0, actor = requestor, reason = requestor_reason) to events array
+- `appendEvent(event)` — standalone writer for future approver and decision events without touching case records
+- `useCaseStore()` hook for consumer access
+- `CaseStoreProvider` wrapped into `DemoLayout` alongside `AuthProvider`, scoping the store to `/demo/*` only
+
+### Key decisions
+- Counter state lives at module level (not React state) so IDs never reset across re-renders — only a full page reload resets them, which is acceptable for demo
+- `submitCase` writes both the case record and the submission event atomically (same function call) — submission is always event sequence 0
+- `appendEvent` kept separate from `submitCase` so approver/decision events can be written by future cards without re-deriving case state
+- Schemas match exactly what was locked in the snapshot — no new fields, no deviations
+
+---
+
+## SETUP-07 — Logout / identity switcher
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Added `logout` action to `AuthContext` — sets user to null, no other side effects
+- Refactored `DemoLayout` to use an inner `DemoChrome` component so that `useAuth()` could be called inside the `AuthProvider` boundary (React context constraint)
+- "SIGN OUT" button fixed bottom-right on all `/demo/*` screens — conditional on `user` being set, so it is invisible on the login screen itself
+- On click: calls `logout()` and navigates to `/demo` with `{ replace: true }` — clears history entry so back-button does not re-enter the authenticated state
+
+### Key decisions
+- Inner component pattern (`DemoChrome` inside `DemoLayout`) chosen over lifting logout state — keeps auth logic fully inside the provider boundary, no prop drilling
+- `replace: true` on navigate prevents the browser back button from returning to an authenticated screen after logout — important for demo where the recruiter is switching identities
+- Button label: "SIGN OUT" (not "Logout" or "Switch User") — consistent with all-caps mono style, neutral enough to serve both genuine logout and identity-switching use cases
+- Button is persistent across all demo screens including confirmation and form screens — recruiter can exit any flow cleanly without needing to complete a submission
+
+---
+
+## S-R1 — Requestor module filter view
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Upgraded `RequestorStub.jsx` from a placeholder to the real module selector view
+- Reads authenticated user's `staff_type` from `AuthContext`, filters `modules.json` by `m.allowed_staff_type === user.staff_type`
+- Renders a styled table with columns: MODULE ID, MODULE NAME, TYPE, DELIVERY DATE — field names pulled directly from modules.json schema
+- Each row is clickable and navigates to `/demo/requestor/:moduleId` — module ID encoded in the route so the next screen can resolve the full module record
+- Auth guard: redirects to `/demo` on mount if no user
+- Back button navigates to `/demo/dashboard`
+
+### Key decisions
+- Filter is `allowed_staff_type` match only — no per-user module assignment list in seed data, staff type is the correct proxy for demo scope
+- Route includes module ID as a URL param (`/demo/requestor/:moduleId`) rather than passing via router state — makes the URL bookmarkable and allows direct navigation during demo without needing to reconstruct state
+- Stub pane created at the same time as the `CancellationStub.jsx` shell (pre-S-R2 landing page when a module row is clicked)
+
+---
+
+## S-R2 — Case type selection and reason field
+**Status:** Shipped
+**Date:** 2026-06
+
+### What was done
+- Built `SubmissionForm` (`src/pages/requestor/SubmissionForm.jsx`) as a standalone prop-driven component — receives `module` record and `onSubmit` callback; reads requestor identity from `AuthContext`
+- Case type dropdown: Business / Personal only; textarea disabled until a case type is selected (prevents reason entry without context)
+- Live character counter displayed below textarea (`{n} / 75`); helper text "Response length not met to submit." shown when between 1–74 characters; counter accent color shifts on threshold crossing
+- Submit button disabled until `caseType !== ''` and `reason.length >= 75`
+- On submit: runs full policy resolution synchronously — `calculateEarlyFlag` → `selectRule` → `resolveApproverData` → `resolveChain` — then passes resolved payload to `onSubmit`; no state writes happen inside `SubmissionForm`
+- Built `CancellationStub.jsx` as the route-level wrapper — resolves the module record from URL params, passes it to `SubmissionForm`, handles submit by navigating to `/demo/requestor/confirm` with payload in router location state
+- Built `SubmissionConfirmation` (`src/pages/requestor/SubmissionConfirmation.jsx`) as the post-submission read-only screen:
+  - PENDING status bar showing first approver name and role label
+  - Case details table: submission timestamp, module ID/name/type, requestor name/eID, case type, early flag row (type B modules only — shows "YES — RULE 5 APPLIED" or "NO")
+  - Reason text block
+  - Numbered approver chain list with STAND-IN badge on coverage gap entries
+  - Redirects to `/demo/requestor` on direct navigation or page refresh (no state = no payload)
+- Added new routes to `App.jsx`: `/demo/requestor/confirm` and `/demo/requestor/:moduleId`
+- New CSS files: `SubmissionForm.css`, `SubmissionConfirmation.css`
+
+### Key decisions
+- Policy resolution runs inside `SubmissionForm.handleSubmit` before `onSubmit` is called — the form computes the resolved chain and passes it up; parent never touches the policy engine. Clean separation: form owns resolution, parent owns navigation and write
+- `SubmissionConfirmation` reads payload exclusively from `location.state` — never from CaseStore — because the case write (S-R3) has not happened yet. Confirmation screen is a read of the resolved payload, not a read of persisted state
+- Early flag row on confirmation is gated on `moduleType === 'B'` — type A modules never display this row, consistent with policy engine behavior (earlyFlag returns null for type A)
+- `replace: true` is not used on the confirm navigation — the requestor should be able to hit back from the confirmation screen to review their form before it is finalized (case write happens at S-R3, not here)
+- Confirmation screen shipped as part of S-R2 because it is the natural end of the form flow and cannot reasonably be split from it — the form with no post-submit feedback would not constitute a shippable state
+
+*Resume at: S-R3 — Auto-routing on submission.*

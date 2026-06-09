@@ -3,7 +3,7 @@
 **Status:** Build in progress  
 **Date:** 2026-06-09  
 **Author:** [Your name]  
-**Version:** 0.4 — S-R3 shipped
+**Version:** 0.6 — S-R5 shipped
 
 ---
 
@@ -661,13 +661,58 @@ Stack decisionLocked — React via Vite, Replit, browser-only
 
 ---
 
+## S-R4 — Requestor status dashboard
+**Status:** Shipped  
+**Date:** 2026-06-09
+
+### What was done
+- Created `src/pages/requestor/RequestorDashboard.jsx` — the requestor's case status view, routed at `/demo/requestor/dashboard`
+- REQUESTOR tile on the role select screen now routes to `/demo/requestor/dashboard`; module selector at `/demo/requestor` is only reachable via "Create a Case" button
+- Dashboard title: "Current Cancellation Requests" with a chamfered orange "Create a Case" button upper-right (same clip-path as submission form's active button)
+- Case rows filtered from `CaseStoreContext` by `requestor_id === user.employee_id`; columns: expand indicator (`+` / `−`), Case ID, Module, Case Type, Submitted, Delivery Date, Status, Current Holder
+- Submitted column: formatted from `case.initial_timestamp`; Delivery column: `delivery_date` from module record
+- Status rendered as a hard-edged pill (`border-radius: 0`) — pending: orange; approved: cyan; denied: magenta
+- Current Holder: `approver_chain[current_approver_index].fullName` + `roleLabel` label
+- Clicking any row expands it inline to show the case's full audit log; clicking again collapses. Expand indicator turns cyan on hover and when open
+- Audit log: events sorted by `sequence_number` ascending; resolves `actor_id` to display name + role label (no eIDs rendered anywhere in this view); `notification_sent` events render a "PRODUCTION: MICROSOFT TEAMS" callout badge
+- Actor resolution: `SYSTEM` → "System / System"; requestor actor → name from employees.json + "Requestor" label; all others → name + role from employees.json
+- Empty state: dark elevated surface with "NO ACTIVE CASES." in display mono
+- Added `Case Summary` page title to `SubmissionConfirmation`; back button on confirmation now routes to `/demo/requestor/dashboard` (was `/demo/requestor`)
+- Demo chrome buttons (RETURN TO PRD, SIGN OUT) redesigned: larger text (11px), more space from screen edge (28px), chamfered clip-path outline with bg-elevated fill and border-hard border. Hover: border and text shift to cyan. Bottom padding on `.rd-content` (88px) ensures content never runs under the fixed chrome
+
+### Key decisions
+- eID display rule enforced at the component level — `resolveActor()` takes `actor_id` and the case record, maps to display name + role label, never surfaces eIDs in output. Matches the eID display rules locked in the 2026-06-09 session update
+- `approver_chain` entries do not carry employee IDs (by policy engine design), so actor resolution for future approver events uses employees.json lookup by `actor_id`. Submission event is detected by matching `actor_id === caseRecord.requestor_id`; SYSTEM events are detected by string equality
+- "Create a Case" reuses the chamfered button clip-path from `SubmissionForm.css` — styles duplicated to `.rd-create-btn` in `index.css` rather than creating a cross-file CSS dependency
+- colSpan on the expanded log row set to 8 (matching the 8-column header: expander + 7 data columns)
+- Back button relabeled "← ROLE SELECT" instead of "← DASHBOARD" — avoids confusion between the role select screen and this dashboard, which has its own stronger claim to the word "dashboard"
+
+---
+
 ## Session Update — 2026-06-09
+
+## S-R5 — Submission in under 5 minutes
+**Status:** Shipped  
+**Date:** 2026-06-09
+
+### What was done
+- Moderated usability test completed with real users against the live S-R4 build
+- Full submission flow (login → module select → case type + reason → submit → confirmation) completed in under 5 minutes across test participants
+
+### Acceptance criteria met
+- A-R5: usability test with real users confirms full submission flow completed in under 5 minutes. ✓
+
+### Notes
+- No code changes — S-R5 is a UX validation milestone, not a build card
+- Test conducted against the S-R4 build; no regressions observed
+
+---
 
 ### Build State
 - SETUP-01 through SETUP-07: Shipped
 - PE-01, PE-02a, PE-02b: Shipped
-- S-R1, S-R2, S-R3: Shipped
-- Next: S-R4 → S-R5 → Approver Flow → dAdmin Flow
+- S-R1, S-R2, S-R3, S-R4, S-R5: Shipped
+- Next: Approver Flow (S-A1 → S-A4) → dAdmin Flow → AL-01 checkpoint → Portfolio Site
 
 ### Decisions made this session
 

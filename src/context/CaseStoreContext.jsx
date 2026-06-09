@@ -43,7 +43,8 @@ export function CaseStoreProvider({ children }) {
   }
 
   function appendEvent(eventData) {
-    setEvents(prev => [...prev, { event_id: nextEventId(), ...eventData }])
+    const event = { event_id: nextEventId(), ...eventData }
+    setEvents(prev => [...prev, event])
   }
 
   return (

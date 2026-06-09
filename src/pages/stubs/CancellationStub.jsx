@@ -7,7 +7,7 @@ import SubmissionForm from '../requestor/SubmissionForm'
 
 export default function CancellationStub() {
   const { user } = useAuth()
-  const { cases, events, submitCase, appendEvent } = useCaseStore()
+  const { submitCase, appendEvent } = useCaseStore()
   const { moduleId } = useParams()
   const navigate = useNavigate()
 
@@ -15,13 +15,6 @@ export default function CancellationStub() {
     if (!user) navigate('/demo', { replace: true })
   }, [user, navigate])
 
-  // S-R3 verification — remove after closing card
-  useEffect(() => {
-    if (cases.length > 0) {
-      console.log('[S-R3] cases:', cases)
-      console.log('[S-R3] events:', events)
-    }
-  }, [cases, events])
 
   if (!user) return null
 

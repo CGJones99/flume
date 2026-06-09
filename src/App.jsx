@@ -8,6 +8,7 @@ import Build from './pages/portfolio/Build'
 import Login from './pages/Login'
 import RoleDashboard from './pages/RoleDashboard'
 import RequestorStub from './pages/stubs/RequestorStub'
+import CancellationStub from './pages/stubs/CancellationStub'
 import ApproverStub from './pages/stubs/ApproverStub'
 import DeptAdminStub from './pages/stubs/DeptAdminStub'
 
@@ -25,6 +26,7 @@ export default function App() {
           <Route index          element={<Login />} />
           <Route path="dashboard" element={<RoleDashboard />} />
           <Route path="requestor" element={<RequestorStub />} />
+          <Route path="requestor/:moduleId" element={<CancellationStub />} />
           <Route path="approver"  element={<ApproverStub />} />
           <Route path="admin"     element={<DeptAdminStub />} />
         </Route>

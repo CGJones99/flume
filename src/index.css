@@ -401,3 +401,88 @@ body {
   color: var(--text-muted);
   letter-spacing: 0.06em;
 }
+
+/* ── Requestor Module Selector ──────────────────────────── */
+
+.requestor-content {
+  flex: 1;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.requestor-section-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.module-table-wrap {
+  overflow-y: auto;
+  border: 1px solid var(--border-soft);
+  flex-shrink: 0;
+  max-height: calc(100vh - 160px);
+}
+
+.module-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.module-table thead tr {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-hard);
+}
+
+.module-table th {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: left;
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+.module-table td {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 13px 16px;
+  white-space: nowrap;
+}
+
+.module-row {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer;
+  transition: box-shadow 0.1s;
+}
+
+.module-row:last-child {
+  border-bottom: none;
+}
+
+.module-row:hover {
+  box-shadow: inset 0 0 0 1px var(--cyan);
+}
+
+.module-row:hover td {
+  color: var(--text-primary);
+}
+
+/* ── Cancellation Stub ──────────────────────────────────── */
+
+.cancellation-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: normal;
+  letter-spacing: 0.15em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+}

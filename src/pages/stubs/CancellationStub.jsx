@@ -18,9 +18,8 @@ export default function CancellationStub() {
   const mod = modules.find(m => m.module_id === moduleId)
   if (!mod) return null
 
-  // Temporary: case state write + navigation will be wired in the next card
   function handleSubmit(payload) {
-    console.log('[SR-2 stub] submission payload:', payload)
+    navigate('/demo/requestor/confirm', { state: payload })
   }
 
   return (

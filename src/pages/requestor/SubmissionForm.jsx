@@ -52,6 +52,8 @@ export default function SubmissionForm({ module, onSubmit }) {
   return (
     <form className="sf-root" onSubmit={handleSubmit} noValidate>
 
+      <h1 className="sf-page-title">Cancellation Case</h1>
+
       <div className="sf-header">
         <div className="sf-header-row">
           <span className="sf-header-label">Module ID</span>

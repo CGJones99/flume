@@ -1,0 +1,201 @@
+/* ── Submission Confirmation ────────────────────────────── */
+
+.sc-root {
+  min-height: 100vh;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.sc-content {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  max-width: 640px;
+  padding: 48px 32px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Status bar */
+
+.sc-status-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-hard);
+  border-left: 3px solid var(--cyan);
+}
+
+.sc-status-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.sc-status-value {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cyan);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.sc-status-awaiting {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+/* Sections */
+
+.sc-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sc-section-heading {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: normal;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Detail table */
+
+.sc-table {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+}
+
+.sc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.sc-row:last-child {
+  border-bottom: none;
+}
+
+.sc-divider {
+  height: 1px;
+  background: var(--border-hard);
+}
+
+.sc-row-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  min-width: 88px;
+  flex-shrink: 0;
+}
+
+.sc-row-value {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--text-secondary);
+}
+
+.sc-row-value--id {
+  color: var(--text-primary);
+}
+
+.sc-row-value--tag {
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.sc-row-value--flag {
+  color: var(--text-muted);
+}
+
+.sc-row-value--flag-active {
+  color: var(--orange);
+}
+
+/* Reason */
+
+.sc-reason {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  padding: 16px 18px;
+  white-space: pre-wrap;
+}
+
+/* Approver chain */
+
+.sc-chain {
+  list-style: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+}
+
+.sc-chain-step {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.sc-chain-step:last-child {
+  border-bottom: none;
+}
+
+.sc-chain-step--standin {
+  background: var(--bg-elevated);
+}
+
+.sc-chain-index {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  min-width: 28px;
+}
+
+.sc-chain-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+}
+
+.sc-chain-role {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.sc-chain-standin {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-left: auto;
+  flex-shrink: 0;
+}

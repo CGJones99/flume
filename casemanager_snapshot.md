@@ -757,4 +757,4 @@ Write layer only. On submission: (1) write case record to store via `submitCase`
 ### Parked
 - README draft (demo instructions, session persistence warning, suggested test flows) — defer until all flow cards shipped
 
-*Resume at: S-R4 — Requestor status dashboard.*
+**Resume at: S-A1 — Approver case view (pulse animation + pending counter on APPROVER tile + role-filtered audit log display). See rescoped card notes above.**

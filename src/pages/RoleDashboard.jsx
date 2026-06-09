@@ -22,7 +22,7 @@ export default function RoleDashboard() {
       id: 'requestor',
       label: 'REQUESTOR',
       active: true,
-      path: '/demo/requestor',
+      path: '/demo/requestor/dashboard',
     },
     {
       id: 'approver',

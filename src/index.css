@@ -300,85 +300,106 @@ body {
   padding: 48px;
 }
 
+/*
+ * Three-layer tile structure:
+ *   tile-outer  — holds filter/drop-shadow; no clip-path so the outer glow isn't clipped
+ *   tile-wrap   — clip-path creates the chamfered octagon; background color = border color
+ *   tile        — inner fill + content; 100% size inside wrap's 1px padding
+ */
+
+.tile-outer {
+  cursor: default;
+}
+
+.tile-outer--active {
+  cursor: pointer;
+}
+
+@keyframes tile-outer-pulse {
+  0%, 100% { filter: none; }
+  50%       { filter: drop-shadow(0 0 18px rgba(127, 227, 212, 0.75)); }
+}
+
+.tile-outer--pulse {
+  animation: tile-outer-pulse 1.6s ease-in-out infinite;
+}
+
+.tile-wrap {
+  clip-path: polygon(
+    20px 0%,
+    calc(100% - 20px) 0%,
+    100% 20px,
+    100% calc(100% - 20px),
+    calc(100% - 20px) 100%,
+    20px 100%,
+    0% calc(100% - 20px),
+    0% 20px
+  );
+  padding: 1px;
+  width: 240px;
+  height: 210px;
+}
+
+.tile-wrap--active {
+  background: var(--cyan);
+}
+
+.tile-wrap--inactive {
+  background: var(--border-soft);
+  opacity: 0.38;
+}
+
 .tile {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  width: 220px;
-  height: 200px;
-  border: 1px solid var(--border-soft);
-  clip-path: polygon(
-    12px 0%,
-    100% 0%,
-    100% calc(100% - 12px),
-    calc(100% - 12px) 100%,
-    0% 100%,
-    0% 12px
-  );
+  gap: 14px;
 }
 
-.tile--active {
+.tile-wrap--active .tile {
   background: var(--bg-card);
-  border-color: var(--cyan);
-  cursor: pointer;
   transition: box-shadow 0.1s;
 }
 
-.tile--active:hover {
-  box-shadow: inset 0 0 28px rgba(127, 227, 212, 0.1), inset 0 0 0 1px var(--cyan);
+.tile-wrap--active:hover .tile {
+  box-shadow: inset 0 0 36px rgba(127, 227, 212, 0.13);
 }
 
-.tile--inactive {
+.tile-wrap--inactive .tile {
   background: var(--bg-elevated);
-  border-color: var(--border-soft);
-  cursor: default;
-  opacity: 0.38;
 }
 
-@keyframes tile-pulse {
-  0%, 100% {
-    box-shadow: inset 0 0 10px rgba(127, 227, 212, 0.06);
-  }
-  50% {
-    box-shadow: inset 0 0 28px rgba(127, 227, 212, 0.22), inset 0 0 0 1px var(--cyan);
+@keyframes tile-inner-pulse {
+  0%, 100% { box-shadow: inset 0 0 12px rgba(127, 227, 212, 0.08); }
+  50%       {
+    box-shadow:
+      inset 0 0 60px rgba(127, 227, 212, 0.35),
+      inset 0 0 18px rgba(127, 227, 212, 0.55);
   }
 }
 
-.tile--pulse {
-  animation: tile-pulse 1.8s ease-in-out infinite;
-}
-
-.tile-label {
-  font-family: var(--font-display);
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.tile--active .tile-label {
-  color: var(--text-primary);
-}
-
-.tile--inactive .tile-label {
-  color: var(--text-muted);
+.tile-outer--pulse .tile {
+  animation: tile-inner-pulse 1.6s ease-in-out infinite;
 }
 
 .tile-action {
   font-family: var(--font-display);
-  font-size: 9px;
-  letter-spacing: 0.16em;
+  font-size: 13px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   text-align: center;
-  padding: 0 18px;
+  padding: 0 24px;
+  line-height: 1.65;
 }
 
-.tile--active .tile-action {
-  color: var(--text-secondary);
+.tile-wrap--active .tile-action {
+  color: var(--text-primary);
 }
 
-.tile--inactive .tile-action {
+.tile-wrap--inactive .tile-action {
   color: var(--text-muted);
 }
 
@@ -388,7 +409,6 @@ body {
   letter-spacing: 0.04em;
   color: var(--cyan);
   text-align: center;
-  padding: 0 12px;
 }
 
 /* ── Stubs ──────────────────────────────────────────────── */

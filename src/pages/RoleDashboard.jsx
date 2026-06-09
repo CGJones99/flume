@@ -9,9 +9,9 @@ const APPROVER_ROLES = [
 ]
 
 export default function RoleDashboard() {
-  const { user }          = useAuth()
-  const { cases }         = useCaseStore()
-  const navigate          = useNavigate()
+  const { user }   = useAuth()
+  const { cases }  = useCaseStore()
+  const navigate   = useNavigate()
 
   useEffect(() => {
     if (!user) navigate('/demo', { replace: true })
@@ -31,21 +31,18 @@ export default function RoleDashboard() {
   const tiles = [
     {
       id:     'requestor',
-      label:  'REQUESTOR',
       action: 'REQUEST A CANCELLATION',
       active: true,
       path:   '/demo/requestor/dashboard',
     },
     {
       id:     'approver',
-      label:  'APPROVER',
       action: 'REVIEW PENDING DECISIONS',
       active: isApprover,
       path:   '/demo/approver',
     },
     {
       id:     'dadmin',
-      label:  'DEPT ADMIN',
       action: 'MANAGE MODULES',
       active: user.role === 'dAdmin',
       path:   '/demo/admin',
@@ -63,27 +60,29 @@ export default function RoleDashboard() {
       <div className="dashboard-tiles">
         {tiles.map(tile => {
           const isPulse = tile.id === 'approver' && tile.active && pendingForUser > 0
-          const classes = [
-            'tile',
-            tile.active ? 'tile--active' : 'tile--inactive',
-            isPulse ? 'tile--pulse' : '',
-          ].filter(Boolean).join(' ')
 
           return (
             <div
               key={tile.id}
-              className={classes}
+              className={[
+                'tile-outer',
+                tile.active ? 'tile-outer--active' : '',
+                isPulse    ? 'tile-outer--pulse'  : '',
+              ].filter(Boolean).join(' ')}
               onClick={() => tile.active && navigate(tile.path)}
             >
-              <span className="tile-label">{tile.label}</span>
-              <span className="tile-action">{tile.action}</span>
-              {isPulse && (
-                <span className="tile-counter">
-                  {pendingForUser === 1
-                    ? '1 CASE AWAITING REVIEW'
-                    : `${pendingForUser} CASES AWAITING REVIEW`}
-                </span>
-              )}
+              <div className={`tile-wrap ${tile.active ? 'tile-wrap--active' : 'tile-wrap--inactive'}`}>
+                <div className="tile">
+                  <span className="tile-action">{tile.action}</span>
+                  {isPulse && (
+                    <span className="tile-counter">
+                      {pendingForUser === 1
+                        ? '1 CASE AWAITING REVIEW'
+                        : `${pendingForUser} CASES AWAITING REVIEW`}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           )
         })}

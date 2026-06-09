@@ -757,4 +757,48 @@ Write layer only. On submission: (1) write case record to store via `submitCase`
 ### Parked
 - README draft (demo instructions, session persistence warning, suggested test flows) — defer until all flow cards shipped
 
-**Resume at: S-A1 — Approver case view (pulse animation + pending counter on APPROVER tile + role-filtered audit log display). See rescoped card notes above.**
+**Resume at: S-A1 — Approver case view (role-filtered audit log display + decision interface). Tile pulse/counter shipped this session. See session update below.**
+
+---
+
+## Session Update — 2026-06-09 (evening)
+
+### Build State
+- SETUP-01 through SETUP-07: Shipped
+- PE-01, PE-02a, PE-02b: Shipped
+- S-R1 through S-R5: Shipped
+- S-A1 tile component (pulse + counter): Shipped. Approver case view still to do.
+- Next: S-A1 approver case view → S-A2 → S-A3 → S-A4 → dAdmin flow
+
+### What was built this session
+
+#### policyEngine.js — eID added to chain entries
+`resolveApproverData` now includes `eID: emp.employee_id` on each entry in `managementChain`, on `talentManager`, and on `dAdmin`. `resolveChain` propagates these through `slot()`, `tmSlot()`, and `dAdminFinal`. Each chain entry returned is now `{ fullName, roleLabel, eID, isStandIn }`.
+
+eID audit performed across all rendering components — no violations found:
+- `RequestorDashboard`: renders `holder.fullName` and `holder.roleLabel` only
+- `SubmissionConfirmation`: renders `approver.fullName`, `approver.roleLabel`, `approver.isStandIn` only
+- `RoleDashboard`: reads `eID` for identity match only, does not render it
+
+#### RoleDashboard.jsx — tile redesign + S-A1 pulse/counter
+- Action verbs replace role name labels: REQUESTOR → "REQUEST A CANCELLATION", APPROVER → "REVIEW PENDING DECISIONS", DEPT ADMIN → "MANAGE MODULES"
+- Tiles redesigned as chamfered octagons using a 3-layer CSS structure (see below)
+- `useCaseStore` imported; `pendingForUser` derived by filtering cases where `current_status === 'pending'` and `approver_chain[current_approver_index].eID === user.employee_id`
+- When `pendingForUser > 0` and approver tile is active: tile gets pulse animation and counter text ("N CASE / CASES AWAITING REVIEW") — this is the S-A1 tile component
+- dAdmin tile pulse/counter deferred to S-D2
+
+#### index.css — 3-layer tile structure
+Border-on-chamfer requires three nested elements because `clip-path` clips `border` and `box-shadow` to straight-edge geometry only. Structure:
+- `tile-outer` — no clip-path; holds `filter: drop-shadow()` for outer glow animation
+- `tile-wrap` — `clip-path` octet polygon at 24px chamfer; `background: var(--cyan)` with `padding: 2px` acts as the border
+- `tile` — inner fill with `clip-path` octet polygon at 17px chamfer; background: `var(--bg-card)`
+
+The inner clip-path at 17px on the inner box places its diagonal at `x+y=21` (outer coords), vs. the outer diagonal at `x+y=24` — ~2px perpendicular gap visible as cyan border on all 8 edges, including diagonal cuts. Pulse: `filter: drop-shadow()` glow on `tile-outer` + layered inset `box-shadow` on `tile`, both on 1.6s cycle.
+
+### Parked this session
+- **Tile border on chamfered edges not visually confirmed** — the geometry is correct on paper (inner clip-path at 17px gives ~2px perp gap on diagonals) but visual result not confirmed to be working properly in browser. Parked to save time. Revisit if the recruiter demo walkthrough needs polish before ship.
+
+### Decisions made this session
+- **Action verbs replace role names on tiles** — the label conveys what the tile does, not what the user is. Cleaner information hierarchy.
+- **eID included in chain entries** — needed for approver identity matching without a separate lookup at every render. eID stays in the data layer; display layer rules unchanged.
+- **dAdmin tile pulse/counter deferred** — S-D2 scope, not S-A1. Keeps card boundaries clean.

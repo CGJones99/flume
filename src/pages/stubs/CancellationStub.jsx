@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import modules from '../../data/modules.json'
+import SubmissionForm from '../requestor/SubmissionForm'
 
 export default function CancellationStub() {
   const { user } = useAuth()
@@ -17,6 +18,11 @@ export default function CancellationStub() {
   const mod = modules.find(m => m.module_id === moduleId)
   if (!mod) return null
 
+  // Temporary: case state write + navigation will be wired in the next card
+  function handleSubmit(payload) {
+    console.log('[SR-2 stub] submission payload:', payload)
+  }
+
   return (
     <div className="stub-root">
       <div className="stub-header">
@@ -26,9 +32,7 @@ export default function CancellationStub() {
         </button>
       </div>
       <div className="requestor-content">
-        <h1 className="cancellation-title">
-          CANCELLATION REQUEST: {mod.module_name} — {mod.delivery_date}
-        </h1>
+        <SubmissionForm module={mod} onSubmit={handleSubmit} />
       </div>
     </div>
   )

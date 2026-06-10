@@ -27,9 +27,12 @@ export default function ApproverDashboard() {
 
   if (!user) return null
 
+  // Exclude cases where this user is acting as the dAdmin final signoff — those
+  // belong to the MANAGE MODULES flow, not the standard approver queue.
   const pendingCases = cases.filter(c =>
     c.current_status === 'pending' &&
-    c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
+    c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id &&
+    c.approver_chain?.[c.current_approver_index]?.roleLabel !== 'Dept Admin'
   )
 
   return (

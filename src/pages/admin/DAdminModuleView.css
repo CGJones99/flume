@@ -1,1 +1,27 @@
-/* DAdminModuleView — uses global stub-*, rd-*, and module-table-* classes from index.css */
+/* ── dAdmin Module View ───────────────────────────────────── */
+
+.dam-td--pending {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--orange);
+  text-transform: uppercase;
+}
+
+/* Row has at least one case awaiting the dAdmin's own decision */
+@keyframes module-row-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 1px var(--orange); }
+  50%       {
+    box-shadow:
+      inset 0 0 0 1px var(--orange),
+      inset 0 0 24px rgba(255, 179, 71, 0.18);
+  }
+}
+
+.module-row--pending {
+  animation: module-row-pulse 1.6s ease-in-out infinite;
+}
+
+.module-row--pending td {
+  color: var(--text-primary);
+}

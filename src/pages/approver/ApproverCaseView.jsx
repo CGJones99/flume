@@ -28,12 +28,17 @@ export default function ApproverCaseView() {
 
   const caseRecord  = cases.find(c => c.case_id === caseId)
 
-  useEffect(() => {
-    if (!user)        navigate('/demo',   { replace: true })
-    else if (!caseRecord) navigate('/demo', { replace: true })
-  }, [user, caseRecord, navigate])
+  const currentEntry = caseRecord?.approver_chain?.[caseRecord?.current_approver_index]
+  const isDAdminStage = currentEntry?.roleLabel === 'Dept Admin' && user?.role === 'dAdmin'
 
-  if (!user || !caseRecord) return null
+  useEffect(() => {
+    if (!user)            navigate('/demo', { replace: true })
+    else if (!caseRecord) navigate('/demo', { replace: true })
+    // dAdmin final-signoff cases belong to the admin flow, not the approver queue
+    else if (isDAdminStage) navigate(`/demo/admin/case/${caseId}`, { replace: true })
+  }, [user, caseRecord, isDAdminStage, caseId, navigate])
+
+  if (!user || !caseRecord || isDAdminStage) return null
 
   const mod       = modMap.get(caseRecord.module_id)
   const requestor = empMap.get(caseRecord.requestor_id)

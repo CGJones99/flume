@@ -1,12 +1,14 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useCaseStore } from '../../context/CaseStoreContext'
 import modules from '../../data/modules.json'
 import './DAdminModuleView.css'
 
 export default function DAdminModuleView() {
-  const { user }  = useAuth()
-  const navigate  = useNavigate()
+  const { user }   = useAuth()
+  const { cases }  = useCaseStore()
+  const navigate   = useNavigate()
 
   useEffect(() => {
     if (!user || user.role !== 'dAdmin') navigate('/demo', { replace: true })
@@ -43,21 +45,34 @@ export default function DAdminModuleView() {
                   <th>NAME</th>
                   <th>TYPE</th>
                   <th>DELIVERY DATE</th>
+                  <th>PENDING</th>
                 </tr>
               </thead>
               <tbody>
-                {myModules.map(m => (
-                  <tr
-                    key={m.module_id}
-                    className="module-row"
-                    onClick={() => navigate(`/demo/admin/module/${m.module_id}`)}
-                  >
-                    <td>{m.module_id}</td>
-                    <td>{m.module_name}</td>
-                    <td>TYPE {m.module_type}</td>
-                    <td>{m.delivery_date}</td>
-                  </tr>
-                ))}
+                {myModules.map(m => {
+                  const moduleCases   = cases.filter(c => c.module_id === m.module_id)
+                  const pendingTotal  = moduleCases.filter(c => c.current_status === 'pending').length
+                  const awaitingMe    = moduleCases.some(c =>
+                    c.current_status === 'pending' &&
+                    c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
+                  )
+
+                  return (
+                    <tr
+                      key={m.module_id}
+                      className={`module-row${awaitingMe ? ' module-row--pending' : ''}`}
+                      onClick={() => navigate(`/demo/admin/module/${m.module_id}`)}
+                    >
+                      <td>{m.module_id}</td>
+                      <td>{m.module_name}</td>
+                      <td>TYPE {m.module_type}</td>
+                      <td>{m.delivery_date}</td>
+                      <td className="dam-td--pending">
+                        {pendingTotal > 0 ? pendingTotal : '—'}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

@@ -21,12 +21,21 @@ export default function RoleDashboard() {
 
   const isApprover = APPROVER_ROLES.includes(user.role) || user.role === 'dAdmin'
 
-  const pendingForUser = isApprover
-    ? cases.filter(c =>
-        c.current_status === 'pending' &&
-        c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
-      ).length
-    : 0
+  // Cases where this user is the current approver, split by whether it's a dAdmin final-signoff
+  // slot (roleLabel === 'Dept Admin') or an intermediate approver step.
+  // A dAdmin can appear in both buckets — e.g. standing in mid-chain vs. their own final slot.
+  const myPending = cases.filter(c =>
+    c.current_status === 'pending' &&
+    c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
+  )
+
+  const pendingAsApprover = myPending.filter(c =>
+    c.approver_chain[c.current_approver_index]?.roleLabel !== 'Dept Admin'
+  ).length
+
+  const pendingAsDAdmin = myPending.filter(c =>
+    c.approver_chain[c.current_approver_index]?.roleLabel === 'Dept Admin'
+  ).length
 
   const tiles = [
     {
@@ -34,18 +43,21 @@ export default function RoleDashboard() {
       action: 'REQUEST A CANCELLATION',
       active: true,
       path:   '/demo/requestor/dashboard',
+      count:  0,
     },
     {
       id:     'approver',
       action: 'REVIEW PENDING DECISIONS',
       active: isApprover,
       path:   '/demo/approver/dashboard',
+      count:  isApprover ? pendingAsApprover : 0,
     },
     {
       id:     'dadmin',
       action: 'MANAGE MODULES',
       active: user.role === 'dAdmin',
       path:   '/demo/admin',
+      count:  user.role === 'dAdmin' ? pendingAsDAdmin : 0,
     },
   ]
 
@@ -59,7 +71,7 @@ export default function RoleDashboard() {
       </div>
       <div className="dashboard-tiles">
         {tiles.map(tile => {
-          const isPulse = (tile.id === 'approver' || tile.id === 'dadmin') && tile.active && pendingForUser > 0
+          const isPulse = tile.active && tile.count > 0
 
           return (
             <div
@@ -76,9 +88,9 @@ export default function RoleDashboard() {
                   <span className="tile-action">{tile.action}</span>
                   {isPulse && (
                     <span className="tile-counter">
-                      {pendingForUser === 1
+                      {tile.count === 1
                         ? '1 CASE AWAITING REVIEW'
-                        : `${pendingForUser} CASES AWAITING REVIEW`}
+                        : `${tile.count} CASES AWAITING REVIEW`}
                     </span>
                   )}
                 </div>

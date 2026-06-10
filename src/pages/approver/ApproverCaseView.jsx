@@ -109,7 +109,7 @@ export default function ApproverCaseView() {
       reason:          notifyText,
     })
 
-    navigate('/demo/approver')
+    navigate('/demo/approver/dashboard')
   }
 
   const hint = getHint()

@@ -1,0 +1,14 @@
+/* Approver-specific overrides — base table/pill/empty styles inherited from index.css rd-* classes */
+
+.ad-td--role {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Inherit cyan on row hover, matching rd-case-row:hover .rd-td rule */
+.rd-case-row:hover .ad-td--role {
+  color: var(--text-secondary);
+}

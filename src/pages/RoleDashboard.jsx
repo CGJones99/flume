@@ -39,7 +39,7 @@ export default function RoleDashboard() {
       id:     'approver',
       action: 'REVIEW PENDING DECISIONS',
       active: isApprover,
-      path:   '/demo/approver',
+      path:   '/demo/approver/dashboard',
     },
     {
       id:     'dadmin',

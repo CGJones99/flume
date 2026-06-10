@@ -14,7 +14,9 @@ import SubmissionConfirmation from './pages/requestor/SubmissionConfirmation'
 import ApproverStub from './pages/stubs/ApproverStub'
 import ApproverDashboard from './pages/approver/ApproverDashboard'
 import ApproverCaseView from './pages/approver/ApproverCaseView'
-import DeptAdminStub from './pages/stubs/DeptAdminStub'
+import DAdminModuleView from './pages/admin/DAdminModuleView'
+import DAdminCasesView from './pages/admin/DAdminCasesView'
+import DAdminCaseDetail from './pages/admin/DAdminCaseDetail'
 
 export default function App() {
   return (
@@ -36,7 +38,9 @@ export default function App() {
           <Route path="approver/dashboard" element={<ApproverDashboard />} />
           <Route path="approver/case/:caseId" element={<ApproverCaseView />} />
           <Route path="approver"  element={<ApproverStub />} />
-          <Route path="admin"     element={<DeptAdminStub />} />
+          <Route path="admin"     element={<DAdminModuleView />} />
+          <Route path="admin/module/:moduleId" element={<DAdminCasesView />} />
+          <Route path="admin/case/:caseId"     element={<DAdminCaseDetail />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -59,7 +59,7 @@ export default function RoleDashboard() {
       </div>
       <div className="dashboard-tiles">
         {tiles.map(tile => {
-          const isPulse = tile.id === 'approver' && tile.active && pendingForUser > 0
+          const isPulse = (tile.id === 'approver' || tile.id === 'dadmin') && tile.active && pendingForUser > 0
 
           return (
             <div

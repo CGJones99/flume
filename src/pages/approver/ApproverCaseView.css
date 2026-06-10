@@ -195,6 +195,13 @@
   color: var(--text-primary);
 }
 
+.acv-history-eid {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--cyan);
+}
+
 .acv-history-role {
   font-family: var(--font-display);
   font-size: 9px;

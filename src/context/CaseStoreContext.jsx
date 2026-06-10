@@ -47,8 +47,12 @@ export function CaseStoreProvider({ children }) {
     setEvents(prev => [...prev, event])
   }
 
+  function updateCase(caseId, updates) {
+    setCases(prev => prev.map(c => c.case_id === caseId ? { ...c, ...updates } : c))
+  }
+
   return (
-    <CaseStoreContext.Provider value={{ cases, events, submitCase, appendEvent }}>
+    <CaseStoreContext.Provider value={{ cases, events, submitCase, appendEvent, updateCase }}>
       {children}
     </CaseStoreContext.Provider>
   )

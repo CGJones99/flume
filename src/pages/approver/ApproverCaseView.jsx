@@ -35,7 +35,7 @@ function resolveActor(actorId, requestorId) {
 export default function ApproverCaseView() {
   const { caseId }  = useParams()
   const { user }    = useAuth()
-  const { cases, events, appendEvent } = useCaseStore()
+  const { cases, events, appendEvent, updateCase } = useCaseStore()
   const navigate    = useNavigate()
 
   const [decision, setDecision] = useState(null) // 'approved' | 'denied' | null
@@ -89,15 +89,17 @@ export default function ApproverCaseView() {
       reason,
     })
 
+    const nextIndex = caseRecord.current_approver_index + 1
+    const nextApprover = caseRecord.approver_chain[nextIndex]
+
     let notifyText
     if (decision === 'approved') {
-      const next = caseRecord.approver_chain[caseRecord.current_approver_index + 1]
-      notifyText = next
-        ? `Notification sent to ${next.fullName} (${next.roleLabel}). Production: Microsoft Teams.`
+      notifyText = nextApprover
+        ? `Notification sent to ${nextApprover.fullName} (${nextApprover.roleLabel}). Production: Microsoft Teams.`
         : `Case fully approved — no further approvers in chain. Production: Microsoft Teams.`
     } else {
       const reqName = requestor?.name ?? '—'
-      notifyText = `Notification sent to ${reqName} (Requestor). Production: Microsoft Teams.`
+      notifyText = `Case denied. Requestor ${reqName} notified. Production: Microsoft Teams.`
     }
 
     appendEvent({
@@ -108,6 +110,20 @@ export default function ApproverCaseView() {
       timestamp:       now,
       reason:          notifyText,
     })
+
+    if (decision === 'approved' && nextIndex < caseRecord.approver_chain.length) {
+      updateCase(caseId, {
+        current_approver_index: nextIndex,
+        most_recent_action:     'approved',
+        most_recent_timestamp:  now,
+      })
+    } else if (decision === 'denied') {
+      updateCase(caseId, {
+        current_status:        'denied',
+        most_recent_action:    'denied',
+        most_recent_timestamp: now,
+      })
+    }
 
     navigate('/demo/approver/dashboard')
   }

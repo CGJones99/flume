@@ -21,7 +21,7 @@ function formatTs(iso) {
 export default function DAdminCaseDetail() {
   const { caseId }  = useParams()
   const { user }    = useAuth()
-  const { cases, events } = useCaseStore()
+  const { cases, events, appendEvent, updateCase } = useCaseStore()
   const navigate    = useNavigate()
 
   const [decision,          setDecision]          = useState(null) // 'approved' | 'denied' | null
@@ -71,17 +71,43 @@ export default function DAdminCaseDetail() {
     setDecision(prev => prev === value ? null : value)
   }
 
-  // S-D6 will replace this stub with actual store writes + navigation
-  function onSignoff(payload) {
-    console.log('[S-D4 stub] onSignoff:', payload)
-  }
-
   function handleSubmit() {
     if (!canSubmit || !isMyTurn) return
-    const payload = decision === 'approved'
-      ? { decision: 'approved', approvalPath, allocationConfirmed: true }
-      : { decision: 'denied', denialReason }
-    onSignoff(payload)
+
+    const now     = new Date().toISOString()
+    const lastSeq = caseEvents.length > 0
+      ? caseEvents[caseEvents.length - 1].sequence_number
+      : -1
+
+    appendEvent({
+      case_id:         caseId,
+      actor_id:        user.employee_id,
+      event_type:      decision,
+      sequence_number: lastSeq + 1,
+      timestamp:       now,
+      reason:          decision === 'approved' ? approvalPath : denialReason,
+    })
+
+    const notifyText = decision === 'approved'
+      ? `Case fully approved by dAdmin ${user.employee_id}. Path: ${approvalPath}. Production: Microsoft Teams.`
+      : `Case denied. Requestor ${requestor?.name ?? '—'} notified. Production: Microsoft Teams.`
+
+    appendEvent({
+      case_id:         caseId,
+      actor_id:        'SYSTEM',
+      event_type:      'notification_sent',
+      sequence_number: lastSeq + 2,
+      timestamp:       now,
+      reason:          notifyText,
+    })
+
+    updateCase(caseId, {
+      current_status:        decision === 'approved' ? 'fully_approved' : 'denied',
+      most_recent_action:    decision,
+      most_recent_timestamp: now,
+    })
+
+    navigate(`/demo/admin/module/${caseRecord.module_id}`)
   }
 
   const hint = getHint()

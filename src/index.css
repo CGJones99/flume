@@ -771,6 +771,11 @@ body {
   border-color: var(--magenta);
 }
 
+.rd-pill--fully_approved {
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+
 .rd-holder-name {
   color: var(--text-secondary);
 }

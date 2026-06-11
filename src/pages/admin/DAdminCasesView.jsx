@@ -67,55 +67,53 @@ export default function DAdminCasesView() {
             <span className="dac-section-count">{openCases.length}</span>
           </div>
           <div className="dac-scroll-pane">
-            {openCases.length === 0 ? (
-              <div className="rd-empty">
-                <span className="rd-empty-label">NO OPEN CASES FOR THIS MODULE.</span>
-              </div>
-            ) : (
-              <table className="rd-table">
-                <thead>
+            <table className="rd-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>CASE ID</th>
+                  <th>REQUESTOR</th>
+                  <th>TYPE</th>
+                  <th>CURRENT STEP</th>
+                  <th>STEPS REMAINING</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {openCases.length === 0 ? (
                   <tr>
-                    <th></th>
-                    <th>CASE ID</th>
-                    <th>REQUESTOR</th>
-                    <th>TYPE</th>
-                    <th>CURRENT STEP</th>
-                    <th>STEPS REMAINING</th>
-                    <th>STATUS</th>
+                    <td colSpan={7} className="dac-td--empty">NO OPEN CASES FOR THIS MODULE.</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {openCases.map(c => {
-                    const requestor       = empMap.get(c.requestor_id)
-                    const currentApprover = c.approver_chain?.[c.current_approver_index]
-                    const isAwaitingMe    = currentApprover?.eID === user.employee_id
-                    const stepsRemaining  = (c.approver_chain?.length ?? 0) - c.current_approver_index
+                ) : openCases.map(c => {
+                  const requestor       = empMap.get(c.requestor_id)
+                  const currentApprover = c.approver_chain?.[c.current_approver_index]
+                  const isAwaitingMe    = currentApprover?.eID === user.employee_id
+                  const stepsRemaining  = (c.approver_chain?.length ?? 0) - c.current_approver_index
 
-                    return (
-                      <tr
-                        key={c.case_id}
-                        className={`rd-case-row${isAwaitingMe ? ' dac-row--awaiting' : ''}`}
-                        onClick={() => navigate(`/demo/admin/case/${c.case_id}`)}
-                      >
-                        <td className="rd-td rd-td--expander">
-                          <span className={`rd-expander${isAwaitingMe ? ' dac-expander--awaiting' : ''}`}>
-                            {isAwaitingMe ? '!' : '>'}
-                          </span>
-                        </td>
-                        <td className="rd-td rd-td--id">{c.case_id}</td>
-                        <td className="rd-td">{requestor?.name ?? '—'}</td>
-                        <td className="rd-td">{c.case_type}</td>
-                        <td className="rd-td">{currentApprover?.roleLabel ?? '—'}</td>
-                        <td className="rd-td dac-td--steps">{stepsRemaining}</td>
-                        <td className="rd-td">
-                          <span className="rd-pill rd-pill--pending">PENDING</span>
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            )}
+                  return (
+                    <tr
+                      key={c.case_id}
+                      className={`rd-case-row${isAwaitingMe ? ' dac-row--awaiting' : ''}`}
+                      onClick={() => navigate(`/demo/admin/case/${c.case_id}`)}
+                    >
+                      <td className="rd-td rd-td--expander">
+                        <span className={`rd-expander${isAwaitingMe ? ' dac-expander--awaiting' : ''}`}>
+                          {isAwaitingMe ? '!' : '>'}
+                        </span>
+                      </td>
+                      <td className="rd-td rd-td--id">{c.case_id}</td>
+                      <td className="rd-td">{requestor?.name ?? '—'}</td>
+                      <td className="rd-td">{c.case_type}</td>
+                      <td className="rd-td">{currentApprover?.roleLabel ?? '—'}</td>
+                      <td className="rd-td dac-td--steps">{stepsRemaining}</td>
+                      <td className="rd-td">
+                        <span className="rd-pill rd-pill--pending">PENDING</span>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -125,48 +123,46 @@ export default function DAdminCasesView() {
             <span className="dac-section-count">{closedCases.length}</span>
           </div>
           <div className="dac-scroll-pane">
-            {closedCases.length === 0 ? (
-              <div className="rd-empty">
-                <span className="rd-empty-label">NO CLOSED CASES FOR THIS MODULE.</span>
-              </div>
-            ) : (
-              <table className="rd-table">
-                <thead>
+            <table className="rd-table">
+              <thead>
+                <tr>
+                  <th>CASE ID</th>
+                  <th>REQUESTOR</th>
+                  <th>TYPE</th>
+                  <th>OUTCOME</th>
+                  <th>CLOSED</th>
+                </tr>
+              </thead>
+              <tbody>
+                {closedCases.length === 0 ? (
                   <tr>
-                    <th>CASE ID</th>
-                    <th>REQUESTOR</th>
-                    <th>TYPE</th>
-                    <th>OUTCOME</th>
-                    <th>CLOSED</th>
+                    <td colSpan={5} className="dac-td--empty">NO CLOSED CASES FOR THIS MODULE.</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {closedCases.map(c => {
-                    const requestor = empMap.get(c.requestor_id)
+                ) : closedCases.map(c => {
+                  const requestor = empMap.get(c.requestor_id)
 
-                    return (
-                      <tr
-                        key={c.case_id}
-                        className="rd-case-row"
-                        onClick={() => navigate(`/demo/admin/case/${c.case_id}`)}
-                      >
-                        <td className="rd-td rd-td--id">{c.case_id}</td>
-                        <td className="rd-td">{requestor?.name ?? '—'}</td>
-                        <td className="rd-td">{c.case_type}</td>
-                        <td className="rd-td">
-                          <span className={`rd-pill rd-pill--${c.current_status}`}>
-                            {pillLabel(c.current_status)}
-                          </span>
-                        </td>
-                        <td className="rd-td rd-td--date">
-                          {formatTs(c.most_recent_timestamp)}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            )}
+                  return (
+                    <tr
+                      key={c.case_id}
+                      className="rd-case-row"
+                      onClick={() => navigate(`/demo/admin/case/${c.case_id}`)}
+                    >
+                      <td className="rd-td rd-td--id">{c.case_id}</td>
+                      <td className="rd-td">{requestor?.name ?? '—'}</td>
+                      <td className="rd-td">{c.case_type}</td>
+                      <td className="rd-td">
+                        <span className={`rd-pill rd-pill--${c.current_status}`}>
+                          {pillLabel(c.current_status)}
+                        </span>
+                      </td>
+                      <td className="rd-td rd-td--date">
+                        {formatTs(c.most_recent_timestamp)}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

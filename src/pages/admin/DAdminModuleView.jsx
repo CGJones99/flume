@@ -29,49 +29,47 @@ export default function DAdminModuleView() {
           <span className="dam-section-count">{mods.length}</span>
         </div>
         <div className="dam-scroll-pane">
-          {mods.length === 0 ? (
-            <div className="rd-empty">
-              <span className="rd-empty-label">NO {label} MODULES.</span>
-            </div>
-          ) : (
-            <table className="module-table">
-              <thead>
+          <table className="module-table">
+            <thead>
+              <tr>
+                <th>MODULE ID</th>
+                <th>NAME</th>
+                <th>TYPE</th>
+                <th>DELIVERY DATE</th>
+                <th>PENDING</th>
+              </tr>
+            </thead>
+            <tbody>
+              {mods.length === 0 ? (
                 <tr>
-                  <th>MODULE ID</th>
-                  <th>NAME</th>
-                  <th>TYPE</th>
-                  <th>DELIVERY DATE</th>
-                  <th>PENDING</th>
+                  <td colSpan={5} className="dam-td--empty">NO {label} MODULES.</td>
                 </tr>
-              </thead>
-              <tbody>
-                {mods.map(m => {
-                  const moduleCases  = cases.filter(c => c.module_id === m.module_id)
-                  const pendingTotal = moduleCases.filter(c => c.current_status === 'pending').length
-                  const awaitingMe   = moduleCases.some(c =>
-                    c.current_status === 'pending' &&
-                    c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
-                  )
+              ) : mods.map(m => {
+                const moduleCases  = cases.filter(c => c.module_id === m.module_id)
+                const pendingTotal = moduleCases.filter(c => c.current_status === 'pending').length
+                const awaitingMe   = moduleCases.some(c =>
+                  c.current_status === 'pending' &&
+                  c.approver_chain?.[c.current_approver_index]?.eID === user.employee_id
+                )
 
-                  return (
-                    <tr
-                      key={m.module_id}
-                      className={`module-row${awaitingMe ? ' module-row--pending' : ''}`}
-                      onClick={() => navigate(`/demo/admin/module/${m.module_id}`)}
-                    >
-                      <td>{m.module_id}</td>
-                      <td>{m.module_name}</td>
-                      <td>TYPE {m.module_type}</td>
-                      <td>{m.delivery_date}</td>
-                      <td className="dam-td--pending">
-                        {pendingTotal > 0 ? pendingTotal : '—'}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          )}
+                return (
+                  <tr
+                    key={m.module_id}
+                    className={`module-row${awaitingMe ? ' module-row--pending' : ''}`}
+                    onClick={() => navigate(`/demo/admin/module/${m.module_id}`)}
+                  >
+                    <td>{m.module_id}</td>
+                    <td>{m.module_name}</td>
+                    <td>TYPE {m.module_type}</td>
+                    <td>{m.delivery_date}</td>
+                    <td className="dam-td--pending">
+                      {pendingTotal > 0 ? pendingTotal : '—'}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     )

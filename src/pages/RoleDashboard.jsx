@@ -82,7 +82,7 @@ export default function RoleDashboard() {
         </span>
       </div>
       <div className="dashboard-tiles">
-        {tiles.map(tile => {
+        {tiles.filter(t => t.active).map(tile => {
           const isPulse = tile.active && tile.count > 0
 
           return (

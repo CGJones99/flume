@@ -1,38 +1,182 @@
 [
   {
     "module_id": "MOD-001",
-    "module_name": "Q3 Analyst Allocation",
+    "module_name": "Alpha Intake Batch",
     "module_type": "A",
-    "delivery_date": "2026-07-15",
-    "allowed_staff_type": "Consultant",
-    "cancellation_unit_value": 4500,
-    "dadmin_id": "EMP-0122"
+    "deployment_date": "2026-07-15",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 4500,
+    "dadmin_id": "EMP-0135"
   },
   {
     "module_id": "MOD-002",
-    "module_name": "Americas Support Bench",
+    "module_name": "Field Cohort Q3",
     "module_type": "A",
-    "delivery_date": "2026-08-01",
-    "allowed_staff_type": "Support",
-    "cancellation_unit_value": 2800,
-    "dadmin_id": "EMP-0123"
+    "deployment_date": "2026-08-01",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 5200,
+    "dadmin_id": "EMP-0136"
   },
   {
     "module_id": "MOD-003",
-    "module_name": "H2 Flex Pool",
-    "module_type": "B",
-    "delivery_date": "2026-08-15",
-    "allowed_staff_type": "Consultant",
-    "cancellation_unit_value": 6200,
-    "dadmin_id": "EMP-0124"
+    "module_name": "Assignment Wave One",
+    "module_type": "A",
+    "deployment_date": "2026-09-01",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 3800,
+    "dadmin_id": "EMP-0137"
   },
   {
     "module_id": "MOD-004",
-    "module_name": "Ops Surge Capacity",
+    "module_name": "Active Roster Block",
+    "module_type": "A",
+    "deployment_date": "2026-06-05",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 6100,
+    "dadmin_id": "EMP-0138"
+  },
+  {
+    "module_id": "MOD-005",
+    "module_name": "Field Cycle Beta",
+    "module_type": "A",
+    "deployment_date": "2026-07-30",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 4900,
+    "dadmin_id": "EMP-0139"
+  },
+  {
+    "module_id": "MOD-006",
+    "module_name": "Extended Field Rotation",
     "module_type": "B",
-    "delivery_date": "2026-06-20",
-    "allowed_staff_type": "Support",
-    "cancellation_unit_value": 3100,
-    "dadmin_id": "EMP-0125"
+    "deployment_date": "2026-08-15",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 6200,
+    "dadmin_id": "EMP-0140"
+  },
+  {
+    "module_id": "MOD-007",
+    "module_name": "Long-Cycle Assignment",
+    "module_type": "B",
+    "deployment_date": "2026-07-10",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 5500,
+    "dadmin_id": "EMP-0141"
+  },
+  {
+    "module_id": "MOD-008",
+    "module_name": "Field Reserve Pool",
+    "module_type": "B",
+    "deployment_date": "2026-06-25",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 7000,
+    "dadmin_id": "EMP-0142"
+  },
+  {
+    "module_id": "MOD-009",
+    "module_name": "Deployment Batch Bravo",
+    "module_type": "B",
+    "deployment_date": "2026-05-20",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 4200,
+    "dadmin_id": "EMP-0143"
+  },
+  {
+    "module_id": "MOD-010",
+    "module_name": "Strategic Field Wave",
+    "module_type": "B",
+    "deployment_date": "2026-09-30",
+    "allowed_staff_type": "Field",
+    "chargeback_cost": 5800,
+    "dadmin_id": "EMP-0144"
+  },
+  {
+    "module_id": "MOD-011",
+    "module_name": "Office Support Batch",
+    "module_type": "A",
+    "deployment_date": "2026-07-20",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 2800,
+    "dadmin_id": "EMP-0135"
+  },
+  {
+    "module_id": "MOD-012",
+    "module_name": "Internal Ops Cohort",
+    "module_type": "A",
+    "deployment_date": "2026-08-10",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 3200,
+    "dadmin_id": "EMP-0136"
+  },
+  {
+    "module_id": "MOD-013",
+    "module_name": "Support Rotation Alpha",
+    "module_type": "A",
+    "deployment_date": "2026-09-15",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 2500,
+    "dadmin_id": "EMP-0137"
+  },
+  {
+    "module_id": "MOD-014",
+    "module_name": "Office Capacity Block",
+    "module_type": "A",
+    "deployment_date": "2026-06-08",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 3900,
+    "dadmin_id": "EMP-0138"
+  },
+  {
+    "module_id": "MOD-015",
+    "module_name": "Staff Support Wave",
+    "module_type": "A",
+    "deployment_date": "2026-07-05",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 2200,
+    "dadmin_id": "EMP-0139"
+  },
+  {
+    "module_id": "MOD-016",
+    "module_name": "Extended Office Rotation",
+    "module_type": "B",
+    "deployment_date": "2026-08-20",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 3100,
+    "dadmin_id": "EMP-0140"
+  },
+  {
+    "module_id": "MOD-017",
+    "module_name": "Long-Cycle Support Block",
+    "module_type": "B",
+    "deployment_date": "2026-07-15",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 4400,
+    "dadmin_id": "EMP-0141"
+  },
+  {
+    "module_id": "MOD-018",
+    "module_name": "Office Reserve Pool",
+    "module_type": "B",
+    "deployment_date": "2026-06-28",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 2900,
+    "dadmin_id": "EMP-0142"
+  },
+  {
+    "module_id": "MOD-019",
+    "module_name": "Internal Ops Batch",
+    "module_type": "B",
+    "deployment_date": "2026-05-15",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 3600,
+    "dadmin_id": "EMP-0143"
+  },
+  {
+    "module_id": "MOD-020",
+    "module_name": "Strategic Support Wave",
+    "module_type": "B",
+    "deployment_date": "2026-10-01",
+    "allowed_staff_type": "Office",
+    "chargeback_cost": 5000,
+    "dadmin_id": "EMP-0144"
   }
 ]

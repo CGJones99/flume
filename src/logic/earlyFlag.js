@@ -13,8 +13,8 @@ export function calculateEarlyFlag(module, submissionTimestamp) {
   const submissionDay = new Date(submissionTimestamp);
   submissionDay.setHours(0, 0, 0, 0);
 
-  // delivery_date is a YYYY-MM-DD string — parse as local midnight
-  const [year, month, day] = module.delivery_date.split('-').map(Number);
+  // deployment_date is a YYYY-MM-DD string — parse as local midnight
+  const [year, month, day] = module.deployment_date.split('-').map(Number);
   const deliveryDay = new Date(year, month - 1, day);
 
   const msPerDay = 1000 * 60 * 60 * 24;
@@ -39,10 +39,10 @@ function runEarlyFlagTests() {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   };
 
-  const moduleA    = { module_type: 'A', delivery_date: dateInDays(30) };
-  const moduleB28  = { module_type: 'B', delivery_date: dateInDays(28) };
-  const moduleB27  = { module_type: 'B', delivery_date: dateInDays(27) };
-  const moduleBFar = { module_type: 'B', delivery_date: dateInDays(60) };
+  const moduleA    = { module_type: 'A', deployment_date: dateInDays(30) };
+  const moduleB28  = { module_type: 'B', deployment_date: dateInDays(28) };
+  const moduleB27  = { module_type: 'B', deployment_date: dateInDays(27) };
+  const moduleBFar = { module_type: 'B', deployment_date: dateInDays(60) };
 
   const cases = [
     { label: 'Type A (any delivery)         → null',  mod: moduleA,    expected: null  },

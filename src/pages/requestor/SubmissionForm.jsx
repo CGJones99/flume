@@ -12,7 +12,7 @@ import './SubmissionForm.css'
  *
  * @param {object}   props
  * @param {object}   props.module    - Full module record from modules.json
- *                                    (module_id, module_name, module_type, delivery_date)
+ *                                    (module_id, module_name, module_type, deployment_date)
  * @param {function} props.onSubmit  - Called with the resolved payload; parent owns navigation
  */
 export default function SubmissionForm({ module, onSubmit }) {

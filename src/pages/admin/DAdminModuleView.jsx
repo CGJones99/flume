@@ -18,8 +18,8 @@ export default function DAdminModuleView() {
 
   const today         = new Date().toISOString().slice(0, 10)
   const myModules     = modules.filter(m => m.dadmin_id === user.employee_id)
-  const activeModules = myModules.filter(m => m.delivery_date >= today)
-  const pastModules   = myModules.filter(m => m.delivery_date < today)
+  const activeModules = myModules.filter(m => m.deployment_date >= today)
+  const pastModules   = myModules.filter(m => m.deployment_date < today)
 
   function renderModuleTable(mods, label) {
     return (
@@ -35,7 +35,7 @@ export default function DAdminModuleView() {
                 <th>MODULE ID</th>
                 <th>NAME</th>
                 <th>TYPE</th>
-                <th>DELIVERY DATE</th>
+                <th>DEPLOYMENT DATE</th>
                 <th>PENDING</th>
               </tr>
             </thead>
@@ -61,7 +61,7 @@ export default function DAdminModuleView() {
                     <td>{m.module_id}</td>
                     <td>{m.module_name}</td>
                     <td>TYPE {m.module_type}</td>
-                    <td>{m.delivery_date}</td>
+                    <td>{m.deployment_date}</td>
                     <td className="dam-td--pending">
                       {pendingTotal > 0 ? pendingTotal : '—'}
                     </td>

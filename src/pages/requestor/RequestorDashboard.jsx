@@ -179,7 +179,7 @@ export default function RequestorDashboard() {
                         <td className="rd-td">{mod?.module_name ?? c.module_id}</td>
                         <td className="rd-td">{c.case_type}</td>
                         <td className="rd-td rd-td--date">{formatTs(c.initial_timestamp)}</td>
-                        <td className="rd-td rd-td--date">{mod?.delivery_date ?? '—'}</td>
+                        <td className="rd-td rd-td--date">{mod?.deployment_date ?? '—'}</td>
                         <td className="rd-td">
                           <span className={`rd-pill rd-pill--${c.current_status}`}>
                             {c.current_status.toUpperCase()}

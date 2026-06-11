@@ -10,7 +10,7 @@ import modules from '../data/modules.json' with { type: 'json' };
  * earlyFlag true + moduleType B short-circuits to rule 5 regardless of
  * staffType or caseType — matching the bypass row in the policy matrix.
  *
- * @param {string}       staffType   "Consultant" | "Support"
+ * @param {string}       staffType   "Field" | "Office"
  * @param {string}       moduleType  "A" | "B"
  * @param {string}       caseType    "Business" | "Personal"
  * @param {boolean|null} earlyFlag   true | false | null (null = type A module)
@@ -19,10 +19,10 @@ import modules from '../data/modules.json' with { type: 'json' };
 export function selectRule(staffType, moduleType, caseType, earlyFlag) {
   if (earlyFlag === true && moduleType === 'B') return 5;
 
-  if (staffType === 'Consultant' && caseType === 'Business') return 1;
-  if (staffType === 'Consultant' && caseType === 'Personal')  return 2;
-  if (staffType === 'Support'    && caseType === 'Business') return 3;
-  if (staffType === 'Support'    && caseType === 'Personal')  return 4;
+  if (staffType === 'Field'  && caseType === 'Business') return 1;
+  if (staffType === 'Field'  && caseType === 'Personal')  return 2;
+  if (staffType === 'Office' && caseType === 'Business') return 3;
+  if (staffType === 'Office' && caseType === 'Personal')  return 4;
 
   throw new Error(
     `selectRule: invalid input — staffType="${staffType}", moduleType="${moduleType}", caseType="${caseType}", earlyFlag=${earlyFlag}`
@@ -44,7 +44,7 @@ export function selectRule(staffType, moduleType, caseType, earlyFlag) {
  * @returns {{
  *   staffType: string,
  *   managementChain: Array<{fullName: string, roleLabel: string, eID: string}>,
- *   talentManager: {fullName: string, roleLabel: string, eID: string} | null,
+ *   hrRep: {fullName: string, roleLabel: string, eID: string} | null,
  *   dAdmin: {fullName: string, roleLabel: string, eID: string}
  * }}
  */
@@ -70,16 +70,16 @@ export function resolveApproverData(requestorId, moduleId) {
     currentId = emp.line_manager_id;
   }
 
-  // Talent Manager — may be null for senior roles (PM and above have no TM in seed data)
-  const tmEmp = requestor.talent_manager_id ? empMap.get(requestor.talent_manager_id) : null;
-  const talentManager = tmEmp ? { fullName: tmEmp.name, roleLabel: tmEmp.role, eID: tmEmp.employee_id } : null;
+  // HR Rep — may be null for dAdmin employees
+  const tmEmp = requestor.hr_rep_id ? empMap.get(requestor.hr_rep_id) : null;
+  const hrRep = tmEmp ? { fullName: tmEmp.name, roleLabel: tmEmp.role, eID: tmEmp.employee_id } : null;
 
   // dAdmin from the module record
   const dAdminEmp = empMap.get(module.dadmin_id);
   if (!dAdminEmp) throw new Error(`resolveApproverData: dAdmin not found — ${module.dadmin_id}`);
   const dAdmin = { fullName: dAdminEmp.name, roleLabel: 'Dept Admin', eID: dAdminEmp.employee_id };
 
-  return { staffType: requestor.staff_type, managementChain, talentManager, dAdmin };
+  return { staffType: requestor.staff_type, managementChain, hrRep, dAdmin };
 }
 
 // ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ export function resolveApproverData(requestorId, moduleId) {
  * Uses the output of resolveApproverData — no direct data access here.
  *
  * Coverage gap rule: if a required chain position cannot be resolved
- * (managementChain is shorter than the rule needs, or talentManager is null),
+ * (managementChain is shorter than the rule needs, or hrRep is null),
  * dAdmin stands in for that position with isStandIn: true.
  * dAdmin always appears as the final entry. If dAdmin stands in earlier,
  * both entries are included — they represent distinct decision steps.
@@ -99,13 +99,13 @@ export function resolveApproverData(requestorId, moduleId) {
  * @param {number} ruleNumber   1–5
  * @param {{
  *   managementChain: Array<{fullName: string, roleLabel: string, eID: string}>,
- *   talentManager: {fullName: string, roleLabel: string, eID: string} | null,
+ *   hrRep: {fullName: string, roleLabel: string, eID: string} | null,
  *   dAdmin: {fullName: string, roleLabel: string, eID: string}
  * }} resolverData  Output of resolveApproverData
  * @returns {Array<{fullName: string, roleLabel: string, eID: string, isStandIn: boolean}>}
  */
 export function resolveChain(ruleNumber, resolverData) {
-  const { managementChain, talentManager, dAdmin } = resolverData;
+  const { managementChain, hrRep, dAdmin } = resolverData;
 
   // Pulls a chain position by index; substitutes dAdmin if the slot is empty
   function slot(index) {
@@ -116,24 +116,24 @@ export function resolveChain(ruleNumber, resolverData) {
   }
 
   function tmSlot() {
-    return talentManager
-      ? { fullName: talentManager.fullName, roleLabel: talentManager.roleLabel, eID: talentManager.eID, isStandIn: false }
+    return hrRep
+      ? { fullName: hrRep.fullName, roleLabel: hrRep.roleLabel, eID: hrRep.eID, isStandIn: false }
       : { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, eID: dAdmin.eID, isStandIn: true };
   }
 
   const dAdminFinal = { fullName: dAdmin.fullName, roleLabel: dAdmin.roleLabel, eID: dAdmin.eID, isStandIn: false };
 
   switch (ruleNumber) {
-    case 1: // Consultant + Business: PM → Principal → Partner → Practice Head → dAdmin
-      return [slot(0), slot(1), slot(2), slot(3), dAdminFinal];
+    case 1: // Field + Business: Team Lead → Senior Director → dAdmin
+      return [slot(0), slot(1), dAdminFinal];
 
-    case 2: // Consultant + Personal: PM → Talent Manager → dAdmin
+    case 2: // Field + Personal: Team Lead → HR Rep → dAdmin
       return [slot(0), tmSlot(), dAdminFinal];
 
-    case 3: // Support + Business: Line Manager → Dept Leader → Regional COO → dAdmin
+    case 3: // Office + Business: Line Manager → Senior Manager → Department Head → dAdmin
       return [slot(0), slot(1), slot(2), dAdminFinal];
 
-    case 4: // Support + Personal: Line Manager → Talent Manager → dAdmin
+    case 4: // Office + Personal: Line Manager → HR Rep → dAdmin
       return [slot(0), tmSlot(), dAdminFinal];
 
     case 5: // Early flag bypass: dAdmin only
@@ -151,53 +151,53 @@ export function resolveChain(ruleNumber, resolverData) {
 function runPE02bTests() {
   console.log('=== PE-02b: resolveApproverData + resolveChain ===\n');
 
-  // Rule 1 — Consultant + Business
-  // EMP-0013 Robin Adler (Consultant, Banking) + MOD-001 (type A, Consultant)
-  // Expected chain: Blake Beck (PM) → Jordan Marsh (Principal) → Parker Nash (Partner) → Nico Uddin (Practice Head) → Alex Gibbs (dAdmin)
-  console.log('--- Rule 1: Consultant + Business ---');
-  const data1 = resolveApproverData('EMP-0013', 'MOD-001');
+  // Rule 1 — Field + Business
+  // EMP-0006 (Junior Analyst, Account Management) + MOD-001 (type A, Field)
+  // Expected chain: Team Lead → Senior Director → dAdmin
+  console.log('--- Rule 1: Field + Business ---');
+  const data1 = resolveApproverData('EMP-0006', 'MOD-001');
   const chain1 = resolveChain(1, data1);
   console.log(JSON.stringify(chain1, null, 2));
 
-  // Rule 2 — Consultant + Personal
-  // Same requestor + module; TM is Blake Abbott (EMP-0003)
-  console.log('\n--- Rule 2: Consultant + Personal ---');
-  const data2 = resolveApproverData('EMP-0013', 'MOD-001');
+  // Rule 2 — Field + Personal
+  // Same requestor + module; HR Rep is EMP-0002 (Account Management HR Rep)
+  console.log('\n--- Rule 2: Field + Personal ---');
+  const data2 = resolveApproverData('EMP-0006', 'MOD-001');
   const chain2 = resolveChain(2, data2);
   console.log(JSON.stringify(chain2, null, 2));
 
-  // Rule 3 — Support + Business
-  // EMP-0067 Nico Xu (Support Staff, Marketing) + MOD-002 (type A, Support)
-  // Expected chain: Gray Torres (Line Manager) → Peyton Hayes (Dept Leader) → Elliot James (Regional COO) → Tatum Hunt (dAdmin)
-  console.log('\n--- Rule 3: Support + Business ---');
-  const data3 = resolveApproverData('EMP-0067', 'MOD-002');
+  // Rule 3 — Office + Business
+  // EMP-0069 (IC, Finance) + MOD-011 (type A, Office)
+  // Expected chain: Line Manager → Senior Manager → Department Head → dAdmin
+  console.log('\n--- Rule 3: Office + Business ---');
+  const data3 = resolveApproverData('EMP-0069', 'MOD-011');
   const chain3 = resolveChain(3, data3);
   console.log(JSON.stringify(chain3, null, 2));
 
-  // Rule 4 — Support + Personal
-  // Same requestor + module; TM is Peyton Moon (EMP-0063)
-  console.log('\n--- Rule 4: Support + Personal ---');
-  const data4 = resolveApproverData('EMP-0067', 'MOD-002');
+  // Rule 4 — Office + Personal
+  // Same requestor + module; HR Rep is EMP-0062 (Finance HR Rep)
+  console.log('\n--- Rule 4: Office + Personal ---');
+  const data4 = resolveApproverData('EMP-0069', 'MOD-011');
   const chain4 = resolveChain(4, data4);
   console.log(JSON.stringify(chain4, null, 2));
 
   // Rule 5 — Early flag bypass
-  // EMP-0013 + MOD-003 (type B, delivery 2026-08-15, triggers early flag)
-  // Expected: Casey Park (dAdmin only)
+  // EMP-0006 + MOD-006 (type B, deployment_date 2026-08-15, triggers early flag)
+  // Expected: dAdmin only
   console.log('\n--- Rule 5: Early flag bypass ---');
-  const data5 = resolveApproverData('EMP-0013', 'MOD-003');
+  const data5 = resolveApproverData('EMP-0006', 'MOD-006');
   const chain5 = resolveChain(5, data5);
   console.log(JSON.stringify(chain5, null, 2));
 
-  // Coverage gap — talentManager null, rule 2
-  // Simulates a requestor with no TM assigned (PM-level employee used as requestor edge case).
+  // Coverage gap — hrRep null, rule 2
+  // Simulates a requestor with no HR Rep assigned (dAdmin used as requestor edge case).
   // resolveChain called directly with a fabricated resolverData to isolate the gap logic.
-  console.log('\n--- Coverage gap: talentManager null, rule 2 (dAdmin stands in) ---');
+  console.log('\n--- Coverage gap: hrRep null, rule 2 (dAdmin stands in) ---');
   const gapData = {
-    staffType: 'Consultant',
-    managementChain: [{ fullName: 'Blake Beck', roleLabel: 'PM' }],
-    talentManager: null,
-    dAdmin: { fullName: 'Alex Gibbs', roleLabel: 'Dept Admin' },
+    staffType: 'Field',
+    managementChain: [{ fullName: 'Alex Adams', roleLabel: 'Team Lead' }],
+    hrRep: null,
+    dAdmin: { fullName: 'Blake Adams', roleLabel: 'Dept Admin' },
   };
   const chainGap = resolveChain(2, gapData);
   console.log(JSON.stringify(chainGap, null, 2));

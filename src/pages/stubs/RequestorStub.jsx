@@ -45,7 +45,7 @@ export default function RequestorStub() {
                   <td>{m.module_id}</td>
                   <td>{m.module_name}</td>
                   <td>{m.module_type}</td>
-                  <td>{m.delivery_date}</td>
+                  <td>{m.deployment_date}</td>
                 </tr>
               ))}
             </tbody>

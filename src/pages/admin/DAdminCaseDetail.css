@@ -1,1 +1,117 @@
 /* DAdminCaseDetail — acv-* layout and panel classes come from ApproverCaseView.css */
+
+/* ── Approval path fields ────────────────────────────────── */
+
+.dac-approval-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dac-field-label {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.dac-dropdown-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.dac-dropdown {
+  appearance: none;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-hard);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 12px 36px 12px 14px;
+  outline: none;
+  border-radius: 0;
+  cursor: pointer;
+  width: 100%;
+  /*
+   * Custom caret — inlined SVG triangle so we can tint it with
+   * the border-hard color instead of the browser default.
+   */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235C3A85'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  transition: border-color 0.1s;
+}
+
+.dac-dropdown:focus {
+  border-color: var(--cyan);
+}
+
+.dac-dropdown option {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  text-transform: uppercase;
+}
+
+/* Placeholder option — dim it */
+.dac-dropdown option[value=""] {
+  color: var(--text-muted);
+}
+
+/* ── Allocation checkbox ─────────────────────────────────── */
+
+.dac-checkbox-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+/*
+ * Square checkbox — matches terminal aesthetic. accent-color tints the
+ * native checkmark without the browser adding any rounding.
+ */
+.dac-checkbox-input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  border: 1px solid var(--border-hard);
+  background: var(--bg-elevated);
+  border-radius: 0;
+  cursor: pointer;
+  margin-top: 2px;
+  position: relative;
+  transition: border-color 0.1s, background 0.1s;
+}
+
+.dac-checkbox-input:checked {
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+/* Checkmark drawn via pseudo-element to keep border-radius: 0 */
+.dac-checkbox-input:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 5px;
+  height: 9px;
+  border: 2px solid var(--bg-base);
+  border-top: none;
+  border-left: none;
+  transform: rotate(45deg);
+}
+
+.dac-checkbox-label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}

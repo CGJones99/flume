@@ -21,11 +21,13 @@ function formatTs(iso) {
 export default function DAdminCaseDetail() {
   const { caseId }  = useParams()
   const { user }    = useAuth()
-  const { cases, events, appendEvent, updateCase } = useCaseStore()
+  const { cases, events } = useCaseStore()
   const navigate    = useNavigate()
 
-  const [decision, setDecision] = useState(null) // 'approved' | 'denied' | null
-  const [reason,   setReason]   = useState('')
+  const [decision,          setDecision]          = useState(null) // 'approved' | 'denied' | null
+  const [approvalPath,      setApprovalPath]      = useState('')
+  const [allocationChecked, setAllocationChecked] = useState(false)
+  const [denialReason,      setDenialReason]      = useState('')
 
   const caseRecord = cases.find(c => c.case_id === caseId)
 
@@ -48,15 +50,20 @@ export default function DAdminCaseDetail() {
     caseRecord.approver_chain?.[caseRecord.current_approver_index]?.eID === user.employee_id
   )
 
-  // dAdmin denial requires 200 chars; approvals require 100 (standard minimum)
-  const minChars     = decision === 'denied' ? 200 : 100
-  const reasonLength = reason.length
-  const showHelper   = reasonLength > 0 && reasonLength < minChars
-  const canSubmit    = decision !== null && reasonLength >= minChars
+  const denialLength = denialReason.length
+  const showDenialHelper = denialLength > 0 && denialLength < 200
+
+  const canSubmit = decision === 'approved'
+    ? approvalPath !== '' && allocationChecked
+    : decision === 'denied'
+      ? denialLength >= 200
+      : false
 
   function getHint() {
-    if (!decision)               return 'SELECT A DECISION AND ENTER A REASON'
-    if (reasonLength < minChars) return `REASON TOO SHORT — ${reasonLength} / ${minChars} CHARS`
+    if (!decision)                                             return 'SELECT APPROVE OR DENY'
+    if (decision === 'approved' && approvalPath === '')        return 'SELECT AN APPROVAL PATH'
+    if (decision === 'approved' && !allocationChecked)         return 'CONFIRM ALLOCATION SYSTEM ACTION'
+    if (decision === 'denied' && denialLength < 200)           return `REASON TOO SHORT — ${denialLength} / 200 CHARS`
     return null
   }
 
@@ -64,44 +71,17 @@ export default function DAdminCaseDetail() {
     setDecision(prev => prev === value ? null : value)
   }
 
+  // S-D6 will replace this stub with actual store writes + navigation
+  function onSignoff(payload) {
+    console.log('[S-D4 stub] onSignoff:', payload)
+  }
+
   function handleSubmit() {
     if (!canSubmit || !isMyTurn) return
-
-    const now     = new Date().toISOString()
-    const lastSeq = caseEvents.length > 0
-      ? caseEvents[caseEvents.length - 1].sequence_number
-      : -1
-
-    appendEvent({
-      case_id:         caseId,
-      actor_id:        user.employee_id,
-      event_type:      decision,
-      sequence_number: lastSeq + 1,
-      timestamp:       now,
-      reason,
-    })
-
-    const reqName    = requestor?.name ?? '—'
-    const notifyText = decision === 'approved'
-      ? `Case fully approved by Dept Admin. Requestor ${reqName} notified. Production: Microsoft Teams.`
-      : `Case denied by Dept Admin. Requestor ${reqName} notified. Production: Microsoft Teams.`
-
-    appendEvent({
-      case_id:         caseId,
-      actor_id:        'SYSTEM',
-      event_type:      'notification_sent',
-      sequence_number: lastSeq + 2,
-      timestamp:       now,
-      reason:          notifyText,
-    })
-
-    updateCase(caseId, {
-      current_status:        decision === 'approved' ? 'approved' : 'denied',
-      most_recent_action:    decision,
-      most_recent_timestamp: now,
-    })
-
-    navigate(`/demo/admin/module/${caseRecord.module_id}`)
+    const payload = decision === 'approved'
+      ? { decision: 'approved', approvalPath, allocationConfirmed: true }
+      : { decision: 'denied', denialReason }
+    onSignoff(payload)
   }
 
   const hint = getHint()
@@ -200,12 +180,12 @@ export default function DAdminCaseDetail() {
 
         </div>
 
-        {/* ── Right column — decision panel (only when it's the dAdmin's turn) ── */}
+        {/* ── Right column — signoff panel (only when it's the dAdmin's turn) ── */}
         {isMyTurn && (
           <div className="acv-right">
             <div className="acv-panel">
 
-              <h2 className="acv-panel-heading">Final Decision</h2>
+              <h2 className="acv-panel-heading">Final Signoff</h2>
 
               <div className="acv-toggles">
                 <button
@@ -224,25 +204,64 @@ export default function DAdminCaseDetail() {
                 </button>
               </div>
 
-              <div className="acv-reason-field">
-                <label className="acv-reason-label" htmlFor="da-reason">
-                  Decision Reasoning
-                </label>
-                <textarea
-                  id="da-reason"
-                  className="acv-reason-textarea"
-                  value={reason}
-                  onChange={e => setReason(e.target.value)}
-                  placeholder={`Minimum ${minChars} characters required.`}
-                  rows={6}
-                />
-                <span className={`acv-char-count${reasonLength >= minChars ? ' acv-char-count--met' : ''}`}>
-                  {reasonLength} / {minChars}
-                </span>
-                {showHelper && (
-                  <span className="acv-reason-helper">Response length not met to submit.</span>
-                )}
-              </div>
+              {/* Approval path fields */}
+              {decision === 'approved' && (
+                <div className="dac-approval-fields">
+
+                  <div className="dac-dropdown-wrapper">
+                    <label className="dac-field-label" htmlFor="dac-approval-path">
+                      Approval Path
+                    </label>
+                    <select
+                      id="dac-approval-path"
+                      className="dac-dropdown"
+                      value={approvalPath}
+                      onChange={e => setApprovalPath(e.target.value)}
+                    >
+                      <option value="" disabled>Select path...</option>
+                      <option value="policy_satisfied">Policy Satisfied</option>
+                      <option value="expedited">Expedited</option>
+                      <option value="special_case">Special Case</option>
+                    </select>
+                  </div>
+
+                  <label className="dac-checkbox-row">
+                    <input
+                      type="checkbox"
+                      className="dac-checkbox-input"
+                      checked={allocationChecked}
+                      onChange={e => setAllocationChecked(e.target.checked)}
+                    />
+                    <span className="dac-checkbox-label">
+                      I have processed the cancellation in the allocation system
+                    </span>
+                  </label>
+
+                </div>
+              )}
+
+              {/* Denial path fields */}
+              {decision === 'denied' && (
+                <div className="acv-reason-field">
+                  <label className="acv-reason-label" htmlFor="dac-denial-reason">
+                    Denial Reasoning
+                  </label>
+                  <textarea
+                    id="dac-denial-reason"
+                    className="acv-reason-textarea"
+                    value={denialReason}
+                    onChange={e => setDenialReason(e.target.value)}
+                    placeholder="Minimum 200 characters required."
+                    rows={7}
+                  />
+                  <span className={`acv-char-count${denialLength >= 200 ? ' acv-char-count--met' : ''}`}>
+                    {denialLength} / 200
+                  </span>
+                  {showDenialHelper && (
+                    <span className="acv-reason-helper">Response length not met to submit.</span>
+                  )}
+                </div>
+              )}
 
               <div className="acv-submit-area">
                 <button

@@ -1,6 +1,7 @@
 import { Outlet, Link, useNavigate } from 'react-router-dom'
 import { AuthProvider } from '../context/AuthContext'
 import { CaseStoreProvider } from '../context/CaseStoreContext'
+import { RequestorReadProvider } from '../context/RequestorReadContext'
 import { useAuth } from '../context/AuthContext'
 
 function DemoChrome() {
@@ -29,7 +30,9 @@ export default function DemoLayout() {
   return (
     <AuthProvider>
       <CaseStoreProvider>
-        <DemoChrome />
+        <RequestorReadProvider>
+          <DemoChrome />
+        </RequestorReadProvider>
       </CaseStoreProvider>
     </AuthProvider>
   )

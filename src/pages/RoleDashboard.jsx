@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCaseStore } from '../context/CaseStoreContext'
+import { useRequestorRead } from '../context/RequestorReadContext'
 
 const APPROVER_ROLES = [
   'PM', 'Principal', 'Partner', 'Practice Head',
@@ -9,9 +10,10 @@ const APPROVER_ROLES = [
 ]
 
 export default function RoleDashboard() {
-  const { user }   = useAuth()
-  const { cases }  = useCaseStore()
-  const navigate   = useNavigate()
+  const { user }          = useAuth()
+  const { cases }         = useCaseStore()
+  const { readCaseIds }   = useRequestorRead()
+  const navigate          = useNavigate()
 
   useEffect(() => {
     if (!user) navigate('/demo', { replace: true })
@@ -37,13 +39,23 @@ export default function RoleDashboard() {
     c.approver_chain[c.current_approver_index]?.roleLabel === 'Dept Admin'
   ).length
 
+  // S-R8: unread closed cases drive the requestor tile pulse
+  const unreadClosedCount = cases.filter(c =>
+    c.requestor_id === user.employee_id &&
+    (c.current_status === 'fully_approved' || c.current_status === 'denied') &&
+    !readCaseIds.has(c.case_id)
+  ).length
+
   const tiles = [
     {
-      id:     'requestor',
-      action: 'REQUEST A CANCELLATION',
-      active: true,
-      path:   '/demo/requestor/dashboard',
-      count:  0,
+      id:         'requestor',
+      action:     'REQUEST A CANCELLATION',
+      active:     true,
+      path:       '/demo/requestor/dashboard',
+      count:      unreadClosedCount,
+      countLabel: unreadClosedCount === 1
+        ? '1 DECISION TO REVIEW'
+        : `${unreadClosedCount} DECISIONS TO REVIEW`,
     },
     {
       id:     'approver',
@@ -88,9 +100,9 @@ export default function RoleDashboard() {
                   <span className="tile-action">{tile.action}</span>
                   {isPulse && (
                     <span className="tile-counter">
-                      {tile.count === 1
+                      {tile.countLabel ?? (tile.count === 1
                         ? '1 CASE AWAITING REVIEW'
-                        : `${tile.count} CASES AWAITING REVIEW`}
+                        : `${tile.count} CASES AWAITING REVIEW`)}
                     </span>
                   )}
                 </div>

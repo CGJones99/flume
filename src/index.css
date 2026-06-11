@@ -888,3 +888,68 @@ body {
   text-transform: uppercase;
   align-self: flex-start;
 }
+
+/* ── Requestor Past Cases Section (S-R7) ───────────────── */
+
+.rd-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.rd-section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.rd-section-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.rd-section-count {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.rd-section-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid var(--border-soft);
+  border-top: none;
+  max-height: 38vh;
+}
+
+.rd-td--empty {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 14px 16px;
+}
+
+/* S-R8: unread past case row — pulses cyan until expanded */
+@keyframes rd-row-unread-pulse {
+  0%, 100% { box-shadow: inset 0 0 0 1px var(--cyan); }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px var(--cyan),
+      inset 0 0 24px rgba(127, 227, 212, 0.18);
+  }
+}
+
+.rd-past-row--unread {
+  animation: rd-row-unread-pulse 1.6s ease-in-out infinite;
+}
+
+.rd-past-row--unread .rd-td {
+  color: var(--text-primary);
+}

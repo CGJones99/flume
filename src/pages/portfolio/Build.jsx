@@ -144,10 +144,10 @@ function MarkdownDoc({ source }) {
 
 const FWD_ITEMS = [
   'Sysadmin configuration UI — module assignment, dAdmin mapping, and policy matrix edits with dept leadership confirmation before publishing.',
-  'Leadership dashboard and reporting — exception surfacing, trend visibility, and zero-learning-curve oversight for cost-center leadership.',
-  'Real integrations — Microsoft Teams (primary notification target), Slack, email; Tableau or equivalent for employee directory sync via eID.',
+  'Leadership visibility layer — cross-department exception trend reporting; distinct from the dAdmin module view, which is operational rather than analytical.',
+  'Notification integrations — Microsoft Teams (primary target), Slack, and email; the audit log event model is already structured for a delivery layer without changes to routing logic.',
   'Policy matrix configuration screen — add, remove, or reweight routing rules as data changes, no code deployment required.',
-  'Real employee directory hook — live sync from HR system on a defined cadence, with in-flight case locking on approver changes.',
+  'Employee directory integration — live sync from HR system via eID, replacing the static seed file; handles approver changes and in-flight case locking mid-chain.',
   'Chargeback enforcement tooling — the compliance layer that makes the audit log actionable, not just informational.',
 ]
 
@@ -187,6 +187,16 @@ export default function Build() {
           </summary>
           <div className="prd-content">
             <MarkdownDoc source={prdContent} />
+            <button
+              className="prd-collapse-sticky"
+              onClick={e => {
+                const details = e.target.closest('details')
+                details.open = false
+                details.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+            >
+              COLLAPSE ↑
+            </button>
           </div>
         </details>
       </section>

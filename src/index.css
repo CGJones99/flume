@@ -1364,6 +1364,32 @@ body {
   pointer-events: none;
 }
 
+/* ── PRD sticky collapse button ─────────────────────────── */
+
+.prd-collapse-sticky {
+  position: sticky;
+  bottom: 0;
+  display: block;
+  width: calc(100% + 56px);
+  margin: 24px -28px -32px;
+  padding: 12px;
+  background: var(--bg-elevated);
+  border: none;
+  border-top: 1px solid var(--border-hard);
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.1s, background 0.1s;
+}
+
+.prd-collapse-sticky:hover {
+  color: var(--cyan);
+  background: var(--bg-card);
+}
+
 /* S-R8: unread past case row — pulses cyan until expanded */
 @keyframes rd-row-unread-pulse {
   0%, 100% { box-shadow: inset 0 0 0 1px var(--cyan); }

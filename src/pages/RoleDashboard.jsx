@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCaseStore } from '../context/CaseStoreContext'
 import { useRequestorRead } from '../context/RequestorReadContext'
+import DemoHeader from '../components/DemoHeader'
 
 const APPROVER_ROLES = [
   'Team Lead', 'Senior Director',
@@ -76,12 +77,7 @@ export default function RoleDashboard() {
 
   return (
     <div className="dashboard-root">
-      <div className="dashboard-header">
-        <span className="dashboard-wordmark">FLUME</span>
-        <span className="dashboard-identity">
-          {user.employee_id} — {user.name}
-        </span>
-      </div>
+      <DemoHeader context="ROLE SELECT" />
       <div className="dashboard-tiles">
         {tiles.filter(t => t.active).map(tile => {
           const isPulse = tile.active && tile.count > 0

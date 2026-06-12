@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import DemoHeader from '../../components/DemoHeader'
 import './SubmissionConfirmation.css'
 
 /**
@@ -40,16 +41,18 @@ export default function SubmissionConfirmation() {
 
   return (
     <div className="sc-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/requestor/dashboard')}>
-          ← DASHBOARD
-        </button>
-      </div>
+      <DemoHeader
+        context="REQUESTOR // CASE FILED"
+        backLabel="DASHBOARD"
+        backTo="/demo/requestor/dashboard"
+      />
 
       <div className="sc-content">
 
-        <h1 className="sc-page-title">Case Summary</h1>
+        <div className="sc-title-block">
+          <span className="sc-eyebrow">SUBMISSION CONFIRMED</span>
+          <h1 className="sc-page-title">Case Summary</h1>
+        </div>
 
         <div className="sc-status-bar">
           <span className="sc-status-label">Status</span>

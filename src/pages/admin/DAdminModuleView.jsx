@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCaseStore } from '../../context/CaseStoreContext'
 import modules from '../../data/modules.json'
+import DemoHeader from '../../components/DemoHeader'
 import './DAdminModuleView.css'
 
 export default function DAdminModuleView() {
@@ -77,16 +78,18 @@ export default function DAdminModuleView() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
-          ← ROLE SELECT
-        </button>
-      </div>
+      <DemoHeader
+        context="DEPT ADMIN // MODULES"
+        backLabel="ROLE SELECT"
+        backTo="/demo/dashboard"
+      />
 
       <div className="rd-content">
         <div className="rd-top-bar">
-          <h1 className="rd-title">Module Administration</h1>
+          <div className="rd-title-block">
+            <span className="rd-eyebrow">MODULE OVERSIGHT</span>
+            <h1 className="rd-title">Module Administration</h1>
+          </div>
         </div>
 
         {renderModuleTable(activeModules, 'ACTIVE')}

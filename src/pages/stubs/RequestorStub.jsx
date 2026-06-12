@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import modules from '../../data/modules.json'
+import DemoHeader from '../../components/DemoHeader'
 
 export default function RequestorStub() {
   const { user } = useAuth()
@@ -17,12 +18,11 @@ export default function RequestorStub() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
-          ← DASHBOARD
-        </button>
-      </div>
+      <DemoHeader
+        context="REQUESTOR // SELECT MODULE"
+        backLabel="DASHBOARD"
+        backTo="/demo/dashboard"
+      />
       <div className="requestor-content">
         <p className="requestor-section-label">SELECT MODULE</p>
         <div className="module-table-wrap">

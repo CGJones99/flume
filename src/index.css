@@ -6,14 +6,18 @@
   --border-hard:  #5C3A85;
   --text-primary: #EDE6F5;
   --text-secondary:#B8A8D0;
-  --text-muted:   #7E6A99;
+  --text-muted:   #8B77A8; /* brightened from #7E6A99 — same hue family, passes small-text contrast */
   --cyan:         #7FE3D4;
   --orange:       #FFB347;
+  --orange-hot:   #FFC76E; /* hover-intensity step of sodium orange */
   --magenta:      #D946EF;
 
   --font-display: 'Departure Mono', monospace;
   --font-body:    'Geist', system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
+
+  --header-h: 56px;       /* demo chrome height — sticky thead offsets key off this */
+  --hud-clearance: 116px; /* bottom padding so content scrolls clear of the fixed HUD buttons */
 }
 
 *, *::before, *::after {
@@ -33,6 +37,257 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/*
+ * CRT scanline pass — fixed overlay above everything, pointer-events off.
+ * Alpha is deliberately near-subliminal: texture, not effect.
+ */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(10, 4, 16, 0.14) 0px,
+    rgba(10, 4, 16, 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+/* ── Terminal furniture: selection, focus, scrollbars ────── */
+
+::selection {
+  background: var(--cyan);
+  color: var(--bg-base);
+}
+
+:focus-visible {
+  outline: 1px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-hard) var(--bg-elevated);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-elevated);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-hard);
+  border: 2px solid var(--bg-elevated);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-elevated);
+}
+
+/* ── Chamfer button system ──────────────────────────────────
+ *
+ * clip-path on the element itself clips its border along the diagonal
+ * cuts, so chamfered buttons never had a complete stroke. Instead the
+ * element stays unclipped and transparent, and two pseudo-elements do
+ * the work:
+ *   ::before — full chamfered silhouette, filled with the border color
+ *   ::after  — same shape inset 1px with the chamfer shrunk by √2 · 1px,
+ *              filled with the face color, leaving a uniform 1px stroke
+ *              visible on all eight edges
+ * isolation: isolate keeps the negative z-index pseudos above ancestor
+ * backgrounds but under the label.
+ *
+ * Per-button styling sets three custom properties:
+ *   --ch  chamfer size   --chb border color   --chf face color
+ */
+
+.demo-back-link,
+.demo-logout-btn,
+.stub-back,
+.login-button,
+.notion-link,
+.rd-create-btn,
+.sf-submit-btn,
+.acv-toggle,
+.acv-submit-btn {
+  --ch: 10px;
+  --chb: var(--border-hard);
+  --chf: var(--bg-elevated);
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  outline-offset: 4px;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.12s, filter 0.12s;
+}
+
+.demo-back-link::before,
+.demo-logout-btn::before,
+.stub-back::before,
+.login-button::before,
+.notion-link::before,
+.rd-create-btn::before,
+.sf-submit-btn::before,
+.acv-toggle::before,
+.acv-submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: var(--chb);
+  clip-path: polygon(
+    var(--ch) 0%,
+    calc(100% - var(--ch)) 0%,
+    100% var(--ch),
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    var(--ch) 100%,
+    0% calc(100% - var(--ch)),
+    0% var(--ch)
+  );
+  transition: background 0.12s;
+}
+
+.demo-back-link::after,
+.demo-logout-btn::after,
+.stub-back::after,
+.login-button::after,
+.notion-link::after,
+.rd-create-btn::after,
+.sf-submit-btn::after,
+.acv-toggle::after,
+.acv-submit-btn::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  background: var(--chf);
+  /* chamfer shrunk by ~√2px so the diagonal stroke renders at 1px like the straight edges */
+  clip-path: polygon(
+    calc(var(--ch) - 1.4px) 0%,
+    calc(100% - var(--ch) + 1.4px) 0%,
+    100% calc(var(--ch) - 1.4px),
+    100% calc(100% - var(--ch) + 1.4px),
+    calc(100% - var(--ch) + 1.4px) 100%,
+    calc(var(--ch) - 1.4px) 100%,
+    0% calc(100% - var(--ch) + 1.4px),
+    0% calc(var(--ch) - 1.4px)
+  );
+  transition: background 0.12s;
+}
+
+/* ── Demo Header — shared chrome on every demo screen ─────── */
+
+.demo-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: var(--header-h);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 0 32px;
+  background: var(--bg-base);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dh-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.dh-wordmark {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Phosphor block — the wordmark's registration mark */
+.dh-wordmark::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(127, 227, 212, 0.55);
+  flex-shrink: 0;
+}
+
+.dh-context {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dh-context::before {
+  content: '// ';
+  color: var(--cyan);
+}
+
+.dh-right {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.dh-identity {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.dh-identity-eid {
+  color: var(--cyan);
+  margin-right: 10px;
+}
+
+.stub-back {
+  --ch: 8px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  padding: 9px 18px;
+}
+
+.stub-back:hover {
+  --chb: var(--cyan);
+  color: var(--cyan);
+}
+
 /* ── Portfolio Nav ──────────────────────────────────────── */
 
 .portfolio-root {
@@ -42,6 +297,9 @@ body {
 }
 
 .portfolio-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -58,6 +316,17 @@ body {
   letter-spacing: 0.35em;
   color: var(--text-primary);
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.portfolio-wordmark::before {
+  content: '';
+  width: 9px;
+  height: 9px;
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(127, 227, 212, 0.55);
 }
 
 .portfolio-links {
@@ -68,14 +337,14 @@ body {
 
 .portfolio-link {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--text-muted);
   text-decoration: none;
   text-transform: uppercase;
   padding-bottom: 2px;
   border-bottom: 1px solid transparent;
-  transition: color 0.1s, border-color 0.1s;
+  transition: color 0.1s, border-color 0.1s, text-shadow 0.1s;
 }
 
 .portfolio-link:hover {
@@ -85,6 +354,7 @@ body {
 .portfolio-link--active {
   color: var(--cyan);
   border-bottom-color: var(--cyan);
+  text-shadow: 0 0 12px rgba(127, 227, 212, 0.45);
 }
 
 .portfolio-content {
@@ -118,38 +388,17 @@ body {
   letter-spacing: 0.06em;
 }
 
-/* ── Demo Escape Hatch ──────────────────────────────────── */
+/* ── Demo HUD — floating escape hatches ─────────────────── */
 
-/*
- * Chamfered outline — clip-path gives the eight-sided shape; bg-elevated fill
- * against bg-base page creates the visible form. Border shows on straight edges;
- * diagonal cuts are transparent, making the chamfer readable without a diagonal stroke.
- */
 .demo-back-link,
 .demo-logout-btn {
   position: fixed;
   bottom: 28px;
-  font-family: var(--font-display);
+  z-index: 50;
   font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--text-muted);
-  text-transform: uppercase;
-  text-decoration: none;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-hard);
-  padding: 10px 22px;
-  cursor: pointer;
-  clip-path: polygon(
-    8px   0%,
-    calc(100% - 8px) 0%,
-    100%  8px,
-    100%  calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    8px   100%,
-    0%    calc(100% - 8px),
-    0%    8px
-  );
-  transition: border-color 0.1s, color 0.1s;
+  padding: 11px 22px;
 }
 
 .demo-back-link {
@@ -162,8 +411,9 @@ body {
 
 .demo-back-link:hover,
 .demo-logout-btn:hover {
-  border-color: var(--cyan);
+  --chb: var(--cyan);
   color: var(--cyan);
+  filter: drop-shadow(0 0 10px rgba(127, 227, 212, 0.35));
 }
 
 /* ── Login ─────────────────────────────────────────────── */
@@ -173,14 +423,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-base);
+  /* faint blueprint grid + vignette behind the terminal prompt */
+  background:
+    repeating-linear-gradient(to right,  rgba(92, 58, 133, 0.09) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, rgba(92, 58, 133, 0.09) 0 1px, transparent 1px 48px),
+    radial-gradient(ellipse 70% 55% at 50% 42%, #1B0E2B 0%, var(--bg-base) 100%);
 }
 
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 52px;
+  gap: 48px;
+}
+
+.login-masthead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
 }
 
 .login-wordmark {
@@ -188,9 +449,33 @@ body {
   font-size: 96px;
   font-weight: normal;
   letter-spacing: 0.35em;
+  /* tracked caps add a trailing gap after the last glyph — offset to re-center */
+  margin-right: -0.35em;
   color: var(--text-primary);
   line-height: 1;
   text-transform: uppercase;
+  text-shadow: 0 0 32px rgba(127, 227, 212, 0.22);
+}
+
+.login-strip {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  margin-right: -0.3em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* rule lines flanking the strip text */
+.login-strip::before,
+.login-strip::after {
+  content: '';
+  width: 56px;
+  height: 1px;
+  background: var(--border-hard);
 }
 
 .login-form {
@@ -214,16 +499,18 @@ body {
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: 14px;
+  letter-spacing: 0.08em;
   padding: 11px 14px;
   outline: none;
   border-radius: 0;
   caret-color: var(--cyan);
   width: 100%;
-  transition: border-color 0.1s;
+  transition: border-color 0.1s, box-shadow 0.1s;
 }
 
 .login-input:focus {
   border-color: var(--cyan);
+  box-shadow: inset 0 0 14px rgba(127, 227, 212, 0.08);
 }
 
 .login-input--error {
@@ -240,23 +527,18 @@ body {
 }
 
 .login-button {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-hard);
-  color: var(--text-secondary);
-  font-family: var(--font-display);
   font-size: 11px;
   letter-spacing: 0.18em;
-  padding: 12px 24px;
-  cursor: pointer;
-  border-radius: 0;
-  text-transform: uppercase;
-  transition: border-color 0.1s, color 0.1s;
+  color: var(--text-secondary);
+  padding: 13px 24px;
   margin-top: 6px;
+  width: 100%;
 }
 
 .login-button:hover {
-  border-color: var(--cyan);
+  --chb: var(--cyan);
   color: var(--cyan);
+  filter: drop-shadow(0 0 10px rgba(127, 227, 212, 0.3));
 }
 
 /* ── Role Dashboard ─────────────────────────────────────── */
@@ -268,43 +550,23 @@ body {
   flex-direction: column;
 }
 
-.dashboard-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 32px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.dashboard-wordmark {
-  font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: 0.35em;
-  color: var(--text-primary);
-  text-transform: uppercase;
-}
-
-.dashboard-identity {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
-}
-
 .dashboard-tiles {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 24px;
-  padding: 48px;
+  padding: 48px 48px var(--hud-clearance);
+  background:
+    repeating-linear-gradient(to right,  rgba(92, 58, 133, 0.07) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, rgba(92, 58, 133, 0.07) 0 1px, transparent 1px 48px);
 }
 
 /*
  * Three-layer tile structure:
  *   tile-outer  — holds filter/drop-shadow; no clip-path so the outer glow isn't clipped
  *   tile-wrap   — clip-path creates the chamfered octagon; background color = border color
- *   tile        — inner fill + content; 100% size inside wrap's 1px padding
+ *   tile        — inner fill + content; 100% size inside wrap's padding
  */
 
 .tile-outer {
@@ -421,7 +683,7 @@ body {
 
 .tile-counter {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--cyan);
   text-align: center;
@@ -434,41 +696,6 @@ body {
   background: var(--bg-base);
   display: flex;
   flex-direction: column;
-}
-
-.stub-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 32px;
-  border-bottom: 1px solid var(--border-soft);
-}
-
-.stub-wordmark {
-  font-family: var(--font-display);
-  font-size: 16px;
-  letter-spacing: 0.35em;
-  color: var(--text-primary);
-  text-transform: uppercase;
-}
-
-.stub-back {
-  background: none;
-  border: 1px solid var(--border-hard);
-  color: var(--text-muted);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 0;
-  text-transform: uppercase;
-  transition: border-color 0.1s, color 0.1s;
-}
-
-.stub-back:hover {
-  border-color: var(--cyan);
-  color: var(--cyan);
 }
 
 .stub-content {
@@ -496,50 +723,76 @@ body {
   letter-spacing: 0.06em;
 }
 
-/* ── Requestor Module Selector ──────────────────────────── */
+/* ── Section labels — shared signature ──────────────────── */
 
-.requestor-content {
-  flex: 1;
-  padding: 32px 32px 88px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-height: 0;
-}
-
-.requestor-section-label {
+/*
+ * Every section label across the app carries a small phosphor block —
+ * a single consistent marker for "a labeled region starts here".
+ */
+.requestor-section-label,
+.rd-section-label,
+.dac-section-label,
+.dam-section-label,
+.sc-section-heading,
+.acv-section-heading,
+.ps-section-label {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: normal;
   letter-spacing: 0.22em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
+
+.requestor-section-label::before,
+.rd-section-label::before,
+.dac-section-label::before,
+.dam-section-label::before,
+.sc-section-heading::before,
+.acv-section-heading::before,
+.ps-section-label::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+/* ── Shared tables (module-table + rd-table) ────────────── */
 
 .module-table-wrap {
-  overflow-y: auto;
   border: 1px solid var(--border-soft);
-  flex-shrink: 0;
-  max-height: calc(100vh - 160px);
 }
 
-.module-table {
+.module-table,
+.rd-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.module-table thead tr {
+/*
+ * Sticky column headers — the page is the single scroll context, so
+ * headers pin just below the demo chrome. Border lives in a box-shadow
+ * because tr borders don't travel with sticky cells.
+ */
+.module-table th,
+.rd-table th {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 5;
   background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border-hard);
-}
-
-.module-table th {
+  box-shadow: inset 0 -1px 0 var(--border-hard);
   font-family: var(--font-display);
   font-size: 10px;
+  font-weight: normal;
   letter-spacing: 0.18em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   text-align: left;
-  padding: 12px 16px;
+  padding: 13px 16px;
   white-space: nowrap;
 }
 
@@ -570,6 +823,17 @@ body {
   color: var(--text-primary);
 }
 
+/* ── Requestor Module Selector ──────────────────────────── */
+
+.requestor-content {
+  flex: 1;
+  padding: 32px 32px var(--hud-clearance);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
 /* ── Cancellation Stub ──────────────────────────────────── */
 
 .cancellation-title {
@@ -585,105 +849,87 @@ body {
 
 .rd-content {
   flex: 1;
-  padding: 32px 32px 88px;
+  padding: 32px 32px var(--hud-clearance);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
   min-height: 0;
 }
 
 .rd-top-bar {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
+}
+
+.rd-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rd-eyebrow {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.rd-eyebrow::before {
+  content: '// ';
 }
 
 .rd-title {
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 20px;
   font-weight: normal;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   color: var(--text-primary);
   text-transform: uppercase;
+  line-height: 1.3;
 }
 
-/*
- * Chamfered button — eight-sided diagonal cuts; matches sf-submit-btn--active
- * from the submission form. Always rendered active (orange) since it's always enabled.
- */
 .rd-create-btn {
-  font-family: var(--font-display);
+  --ch: 14px;
+  --chb: var(--orange);
+  --chf: var(--orange);
   font-size: 11px;
   letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 14px 40px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  background: var(--orange);
   color: var(--bg-base);
-  clip-path: polygon(
-    14px   0%,
-    calc(100% - 14px) 0%,
-    100%   14px,
-    100%   calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    14px   100%,
-    0%     calc(100% - 14px),
-    0%     14px
-  );
-  transition: background 0.12s;
+  padding: 15px 40px;
   flex-shrink: 0;
 }
 
 .rd-create-btn:hover {
-  background: var(--text-primary);
+  --chb: var(--orange-hot);
+  --chf: var(--orange-hot);
+  filter: drop-shadow(0 0 12px rgba(255, 179, 71, 0.45));
 }
 
 .rd-empty {
-  flex: 1;
+  min-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-soft);
-  background: var(--bg-elevated);
+  /* dormant region — diagonal hatch reads as "intentionally empty", not broken */
+  background:
+    repeating-linear-gradient(-45deg, rgba(92, 58, 133, 0.10) 0 1px, transparent 1px 12px),
+    var(--bg-elevated);
 }
 
 .rd-empty-label {
   font-family: var(--font-display);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.22em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .rd-table-wrap {
-  overflow-y: auto;
   border: 1px solid var(--border-soft);
-  flex-shrink: 0;
-  max-height: calc(100vh - 200px);
-}
-
-.rd-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.rd-table thead tr {
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border-hard);
-}
-
-.rd-table th {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  text-align: left;
-  padding: 12px 16px;
-  white-space: nowrap;
 }
 
 .rd-td {
@@ -748,9 +994,9 @@ body {
 .rd-pill {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 9px;
-  letter-spacing: 0.18em;
-  padding: 4px 8px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  padding: 4px 9px;
   border: 1px solid;
   border-radius: 0;
   text-transform: uppercase;
@@ -782,7 +1028,7 @@ body {
 
 .rd-holder-role {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -815,7 +1061,7 @@ body {
 
 .rd-log-heading {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.22em;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -848,7 +1094,7 @@ body {
 
 .rd-log-role {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -856,7 +1102,7 @@ body {
 
 .rd-log-type {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   color: var(--cyan);
   text-transform: uppercase;
@@ -879,7 +1125,7 @@ body {
 .rd-teams-callout {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.16em;
   color: var(--orange);
   border: 1px solid var(--orange);
@@ -899,32 +1145,21 @@ body {
 .rd-section-header {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  padding-bottom: 8px;
+  gap: 12px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border-soft);
-}
-
-.rd-section-label {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-muted);
 }
 
 .rd-section-count {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.12em;
   color: var(--text-muted);
 }
 
 .rd-section-scroll {
-  overflow-y: auto;
-  overflow-x: hidden;
   border: 1px solid var(--border-soft);
   border-top: none;
-  max-height: 38vh;
 }
 
 .rd-td--empty {
@@ -933,7 +1168,7 @@ body {
   letter-spacing: 0.14em;
   color: var(--text-muted);
   text-transform: uppercase;
-  padding: 14px 16px;
+  padding: 16px;
 }
 
 /* ── Portfolio Footer ───────────────────────────────────── */
@@ -980,6 +1215,10 @@ body {
   text-transform: uppercase;
 }
 
+.ps-eyebrow::before {
+  content: '// ';
+}
+
 .ps-title {
   font-family: var(--font-display);
   font-size: 72px;
@@ -988,6 +1227,7 @@ body {
   color: var(--text-primary);
   text-transform: uppercase;
   line-height: 1;
+  text-shadow: 0 0 36px rgba(127, 227, 212, 0.16);
 }
 
 .ps-tagline {
@@ -1009,14 +1249,6 @@ body {
 
 .ps-section:last-child {
   border-bottom: none;
-}
-
-.ps-section-label {
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.28em;
-  color: var(--text-muted);
-  text-transform: uppercase;
 }
 
 .ps-prose {
@@ -1045,7 +1277,7 @@ body {
 
 .decision-entry {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 120px 1fr;
   gap: 32px;
   padding: 36px 0;
   border-bottom: 1px solid var(--border-soft);
@@ -1058,21 +1290,23 @@ body {
 .decision-left {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   padding-top: 2px;
 }
 
+/* Oversized index numeral — the entry's anchor point */
 .decision-num {
   font-family: var(--font-display);
-  font-size: 11px;
-  letter-spacing: 0.22em;
+  font-size: 22px;
+  letter-spacing: 0.18em;
   color: var(--cyan);
+  text-shadow: 0 0 14px rgba(127, 227, 212, 0.3);
 }
 
 .decision-title {
   font-family: var(--font-display);
-  font-size: 9px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   color: var(--text-primary);
   text-transform: uppercase;
   line-height: 1.6;
@@ -1134,7 +1368,7 @@ body {
 
 .prd-summary-label {
   font-family: var(--font-display);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--text-secondary);
   text-transform: uppercase;
@@ -1142,18 +1376,18 @@ body {
 
 .prd-summary-hint {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.18em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .prd-expand:not([open]) .prd-summary-hint::after {
-  content: 'EXPAND';
+  content: '+ EXPAND';
 }
 
 .prd-expand[open] .prd-summary-hint::after {
-  content: 'COLLAPSE';
+  content: '− COLLAPSE';
   color: var(--cyan);
 }
 
@@ -1274,9 +1508,10 @@ body {
 
 .prd-th {
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
+  font-weight: normal;
   letter-spacing: 0.18em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
   text-align: left;
   padding: 10px 14px;
@@ -1341,22 +1576,18 @@ body {
 /* ── Build page — Notion board link ─────────────────────── */
 
 .notion-link {
-  display: inline-block;
-  font-family: var(--font-display);
+  --ch: 8px;
   font-size: 10px;
   letter-spacing: 0.18em;
   color: var(--text-muted);
-  text-decoration: none;
-  text-transform: uppercase;
-  border: 1px solid var(--border-hard);
-  padding: 12px 24px;
+  padding: 13px 24px;
   align-self: flex-start;
-  transition: border-color 0.1s, color 0.1s;
 }
 
 .notion-link:hover {
-  border-color: var(--cyan);
+  --chb: var(--cyan);
   color: var(--cyan);
+  filter: drop-shadow(0 0 10px rgba(127, 227, 212, 0.3));
 }
 
 .notion-link--pending {
@@ -1377,7 +1608,7 @@ body {
   border: none;
   border-top: 1px solid var(--border-hard);
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.22em;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -1406,4 +1637,25 @@ body {
 
 .rd-past-row--unread .rd-td {
   color: var(--text-primary);
+}
+
+/* ── Narrow viewports — tables gain horizontal scroll ───── */
+
+@media (max-width: 900px) {
+  /* horizontal overflow takes priority over sticky headers here */
+  .rd-table-wrap,
+  .rd-section-scroll,
+  .module-table-wrap {
+    overflow-x: auto;
+  }
+
+  .dh-identity {
+    display: none;
+  }
+
+  .rd-top-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
 }

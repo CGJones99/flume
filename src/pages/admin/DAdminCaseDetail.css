@@ -25,7 +25,7 @@
 
 .dac-dropdown {
   appearance: none;
-  background: var(--bg-elevated);
+  background: var(--bg-base);
   border: 1px solid var(--border-hard);
   color: var(--text-primary);
   font-family: var(--font-display);
@@ -49,6 +49,7 @@
 
 .dac-dropdown:focus {
   border-color: var(--cyan);
+  box-shadow: inset 0 0 14px rgba(127, 227, 212, 0.08);
 }
 
 .dac-dropdown option {
@@ -82,7 +83,7 @@
   height: 16px;
   min-width: 16px;
   border: 1px solid var(--border-hard);
-  background: var(--bg-elevated);
+  background: var(--bg-base);
   border-radius: 0;
   cursor: pointer;
   margin-top: 2px;

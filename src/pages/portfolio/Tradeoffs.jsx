@@ -65,10 +65,10 @@ export default function Tradeoffs() {
   return (
     <div className="ps-page">
       <section className="ps-hero">
-        <span className="ps-eyebrow"> THE SEVEN DECISIONS THAT SHAPED FLUME</span>
+        <span className="ps-eyebrow">THE SEVEN DECISIONS THAT SHAPED FLUME</span>
         <h1 className="ps-title">TRADEOFFS &amp; RETRO</h1>
         <p className="ps-tagline">
-          Seven decisions made during the build, changing it's shape from what I first imagined. Two core lessons: embracing flexibility in building, and properly pressure testing feature scoping.
+          Seven decisions made during the build, changing its shape from what I first imagined. Two core lessons: embracing flexibility in building, and properly pressure testing feature scoping.
         </p>
       </section>
 

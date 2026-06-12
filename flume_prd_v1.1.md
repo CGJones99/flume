@@ -202,39 +202,39 @@ As a dAdmin, I want to confirm that I have committed approved allocation changes
 
 ## 05 / Policy Matrix
 
-The early flag is calculated by the system, not declared by the requestor (exploit prevention). If module type is **B** and delivery date is more than 4 weeks from submission, early flag = **YES**.
+The early flag is calculated by the system, not declared by the requestor (exploit prevention). If module type is **B** and deployment date is more than 4 weeks from submission, early flag = **YES**.
 
 | Staff | Module | Case | Early | Approver Chain | Final |
 |---|---|---|---|---|---|
-| Consultant | A | Business | n/a | PM → Principal → Partner → Practice Head | dAdmin |
-| Consultant | A | Personal | n/a | PM → Talent Manager | dAdmin |
-| Support | A | Business | n/a | Line Mgr → Dept Leader → Regional COO | dAdmin |
-| Support | A | Personal | n/a | Line Mgr → Talent Manager | dAdmin |
-| Consultant | B | Business | No | PM → Principal → Partner → Practice Head | dAdmin |
-| Consultant | B | Personal | No | PM → Talent Manager | dAdmin |
-| Support | B | Business | No | Line Mgr → Dept Leader → Regional COO | dAdmin |
-| Support | B | Personal | No | Line Mgr → Talent Manager | dAdmin |
-| Consultant | B | Business | Yes | (bypass all) | dAdmin only |
-| Consultant | B | Personal | Yes | (bypass all) | dAdmin only |
-| Support | B | Business | Yes | (bypass all) | dAdmin only |
-| Support | B | Personal | Yes | (bypass all) | dAdmin only |
+| Field | A | Business | n/a | Team Lead → Senior Director | dAdmin |
+| Field | A | Personal | n/a | Team Lead → HR Rep | dAdmin |
+| Office | A | Business | n/a | Line Mgr → Senior Manager → Department Head | dAdmin |
+| Office | A | Personal | n/a | Line Mgr → HR Rep | dAdmin |
+| Field | B | Business | No | Team Lead → Senior Director | dAdmin |
+| Field | B | Personal | No | Team Lead → HR Rep | dAdmin |
+| Office | B | Business | No | Line Mgr → Senior Manager → Department Head | dAdmin |
+| Office | B | Personal | No | Line Mgr → HR Rep | dAdmin |
+| Field | B | Business | Yes | (bypass all) | dAdmin only |
+| Field | B | Personal | Yes | (bypass all) | dAdmin only |
+| Office | B | Business | Yes | (bypass all) | dAdmin only |
+| Office | B | Personal | Yes | (bypass all) | dAdmin only |
 
 ### Effective Rule Set
 
 Five rules plus the early-flag bypass:
 
-1. **Consultant + Business** (A or B, no early flag): PM → Principal → Partner → Practice Head → dAdmin
-2. **Consultant + Personal** (A or B, no early flag): PM → Talent Manager → dAdmin
-3. **Support + Business** (A or B, no early flag): Line Manager → Dept Leader → Regional COO → dAdmin
-4. **Support + Personal** (A or B, no early flag): Line Manager → Talent Manager → dAdmin
+1. **Field + Business** (A or B, no early flag): Team Lead → Senior Director → dAdmin
+2. **Field + Personal** (A or B, no early flag): Team Lead → HR Rep → dAdmin
+3. **Office + Business** (A or B, no early flag): Line Manager → Senior Manager → Department Head → dAdmin
+4. **Office + Personal** (A or B, no early flag): Line Manager → HR Rep → dAdmin
 5. **Any + Module B + Early flag:** dAdmin only (all intermediaries bypassed)
 
 > **Out of demo scope**
-> Specialists are omitted (function like Support in 95% of cases — noted for production documentation). Consultant seniority routing is also omitted: adds build complexity without sufficient portfolio value.
+> Senior-level routing variants (e.g. bypassing intermediate approvers for high-seniority requestors) are omitted: they add build complexity without sufficient portfolio value for the demo.
 
-> **As-built note:** The matrix above shipped exactly as specified — `selectRule()` checks Rule 5 (early flag bypass) first regardless of staff/case type, then resolves Rules 1–4 from staff type + case type. The split into **PE-02a** (rule selection — pure function, no data access) and **PE-02b** (chain resolution — walks the org hierarchy via `line_manager_id`, resolves talent manager and dAdmin) is a build-time decomposition, not a policy change. See Section 12 for why that split happened and why it mattered. One addition not visible in the matrix: any unresolvable chain slot (coverage gap, e.g. a null talent manager) substitutes the dAdmin with an `isStandIn: true` flag, surfaced to the requestor as a "STAND-IN" badge — this is the UI expression of Decision #12 in Section 7, and is discussed as a forward-looking redundancy guarantee in Section 12 (Fallback rule: unresolvable chain slot routes to dAdmin).
+> **As-built note:** The matrix above shipped exactly as specified — `selectRule()` checks Rule 5 (early flag bypass) first regardless of staff/case type, then resolves Rules 1–4 from staff type + case type. The split into **PE-02a** (rule selection — pure function, no data access) and **PE-02b** (chain resolution — walks the org hierarchy via `line_manager_id`, resolves HR Rep and dAdmin) is a build-time decomposition, not a policy change. See Section 12 for why that split happened and why it mattered. One addition not visible in the matrix: any unresolvable chain slot (coverage gap, e.g. a null `hr_rep_id`) substitutes the dAdmin with an `isStandIn: true` flag, surfaced to the requestor as a "STAND-IN" badge — this is the UI expression of Decision #12 in Section 7, and is discussed as a forward-looking redundancy guarantee in Section 12 (Fallback rule: unresolvable chain slot routes to dAdmin).
 
-> **Framing note: this matrix is a configuration, not a hardcoded shape.** The point of resolving rules in two layers — pure rule selection (PE-02a) against a small lookup table, and chain resolution (PE-02b) against the org hierarchy and role labels — is that both layers are designed to be data-driven. Rule selection is a small table keyed on staff type, module type, case type, and early flag; adding, removing, or reweighting rules means editing that table, not the selection logic. Chain resolution walks role relationships (`line_manager_id`, `talent_manager_id`, `dadmin_id`) rather than hardcoding "PM → Principal → Partner" as a literal sequence of role names — so a new approval path, a new role in an existing chain, or a different chain entirely for a new department is a data change, not a code change to the engine itself. The demo ships with the 5 rules above preloaded and not exposed via UI (Decision #3, #5 — sAdmin owns this in production), but the underlying engine is intentionally modular: the architecture is the product decision here as much as the specific 5-rule policy is.
+> **Framing note: this matrix is a configuration, not a hardcoded shape.** The point of resolving rules in two layers — pure rule selection (PE-02a) against a small lookup table, and chain resolution (PE-02b) against the org hierarchy and role labels — is that both layers are designed to be data-driven. Rule selection is a small table keyed on staff type, module type, case type, and early flag; adding, removing, or reweighting rules means editing that table, not the selection logic. Chain resolution walks role relationships (`line_manager_id`, `hr_rep_id`, `dadmin_id`) rather than hardcoding "Team Lead → Senior Director" as a literal sequence of role names — so a new approval path, a new role in an existing chain, or a different chain entirely for a new department is a data change, not a code change to the engine itself. The demo ships with the 5 rules above preloaded and not exposed via UI (Decision #3, #5 — sAdmin owns this in production), but the underlying engine is intentionally modular: the architecture is the product decision here as much as the specific 5-rule policy is.
 
 ---
 
@@ -282,11 +282,11 @@ All sixteen items below are locked. Re-opening requires explicit flag.
 | 08 | dAdmin signoff format | Structured dropdown for approvals (policy satisfied / expedited / special case). Denial requires 200 char min written reason. **Shipped as specified** — see S-D4 in Section 4. |
 | 09 | Requestor reason minimum | 75 characters. |
 | 10 | Denial behavior | Any denial at any stage terminates the chain. Case returns to requestor with full decision log. dAdmin is skipped only in this scenario. |
-| 11 | Database sync cadence | Weekly. In-flight cases lock to submission-time delivery dates. New submissions use updated dates. |
-| 12 | Coverage gap behavior | If approver is on leave/terminated, system skips them and flags to dAdmin. ~~Stall notification triggers collaborative resolution.~~ Requestor cannot flag coverage gaps at submission (exploit prevention). **Shipped** as the `isStandIn` flag in `resolveChain()`, surfaced as a "STAND-IN" badge on the requestor's approver-chain view. The skip-and-flag behavior is independent of the stall notification (#6, out of demo scope) — coverage gaps are resolved at routing time, not via a time-based trigger, so this shipped without depending on #6. Generalized in Section 12 as a routing-redundancy guarantee: any unresolvable chain slot, not just leave/termination, falls back to dAdmin. |
+| 11 | Database sync cadence | Weekly. In-flight cases lock to submission-time deployment dates. New submissions use updated dates. |
+| 12 | Coverage gap behavior | If approver is on leave/terminated, system skips them and flags to dAdmin. ~~Stall notification triggers collaborative resolution.~~ Requestor cannot flag coverage gaps at submission (exploit prevention). **Shipped** as the `isStandIn` flag in `resolveChain()`, surfaced as a "STAND-IN" badge on the requestor's approver-chain view. The skip-and-flag behavior is independent of the stall notification (#6, out of demo scope) — coverage gaps are resolved at routing time, not via a time-based trigger, so this shipped without depending on #6. Generalized in Section 12 as a routing-redundancy guarantee: any unresolvable chain slot, not just leave/termination, falls back to dAdmin. This includes a null `hr_rep_id` on the requesting employee's record. |
 | 13 | Approver name visibility | Full name visible to requestor on status view. Not role only. |
 | 14 | Concurrent submissions | Allowed. A requestor may have multiple active cases across modules simultaneously. |
-| 15 | In-flight delivery date changes | Cases in flight lock to submission-time dates. Date changes only affect future submissions. |
+| 15 | In-flight deployment date changes | Cases in flight lock to submission-time dates. Date changes only affect future submissions. |
 | 16 | Rubber-stamping risk | Social pressure: approver reasoning visible to subsequent approvers and dAdmin. 100 char min enforces minimum thought. dAdmin acts as final quality gate. **Shipped** — enforced at a single component boundary (`CaseHistory`), see Section 12. |
 
 > **New locked decision (2026-06-09), not in original 16: eID display rules.**
@@ -315,7 +315,7 @@ All sixteen items below are locked. Re-opening requires explicit flag.
 - Employee identity keyed to `eID`. At login, eID resolves staff type, role, and module assignments.
 - A user can hold multiple roles (e.g. requestor + approver), but never for the same case. Landing page surfaces available actions based on active roles.
 - Policy matrix preloaded as seed data. Not configurable via UI in demo.
-- Module delivery dates are a field on the module record. Used by policy engine to calculate early flag at submission time.
+- Module deployment dates are a field on the module record. Used by policy engine to calculate early flag at submission time.
 - ~~Notification delivery mocked as in-app inbox in demo.~~ Notification delivery represented as audit log `notification_sent` events. Production target: Microsoft Teams.
 - No real SSO. Demo uses eID selector tied to seeded user table.
 - Employee directory mocked via seed data. Production would hook into Tableau or equivalent HR database via eID as primary key.
@@ -328,27 +328,23 @@ All sixteen items below are locked. Re-opening requires explicit flag.
 
 ### Testable Flows
 
-Four flows plus one rejection. Together they exercise the full rule set surface area.
+Five flows plus one rejection. Together they exercise the full rule set surface area.
 
-1. **Consultant + Module A + Business** — full chain: PM → Principal → Partner → Practice Head → dAdmin
-2. **Support + Module A + Business** — full chain: Line Manager → Dept Leader → Regional COO → dAdmin
-3. **Support + Module A + Personal** — short chain: Line Manager → Talent Manager → dAdmin
-4. **Any + Module B + Early flag** — dAdmin only (bypass all)
-5. **Mid-chain rejection** — approver denies partway through → case returns to requestor with decision log
-
-### Documented but Not Demo-Tested
-- Consultant + Personal
-- Consultant + Module B (no early flag)
-- Support + Module B (no early flag)
+1. **Field + Module A + Business** — chain: Team Lead → Senior Director → dAdmin
+2. **Field + Module A + Personal** — chain: Team Lead → HR Rep → dAdmin
+3. **Office + Module A + Business** — chain: Line Manager → Senior Manager → Department Head → dAdmin
+4. **Office + Module A + Personal** — chain: Line Manager → HR Rep → dAdmin
+5. **Any + Module B + Early flag** — dAdmin only (bypass all)
+6. **Mid-chain rejection** — approver denies partway through → case returns to requestor with decision log
 
 ### Seed Data Needs
-- ~8-10 user identities across staff types and approver roles
-- 3-4 modules (mix of type A and B, artificial delivery dates)
-- At least one Module B with delivery date >4 weeks out (triggers early flag)
-- dAdmin assigned to each module
+- ~144 employee identities across Field orgs (Account Management, Sales, Delivery) and Office orgs (Finance, Legal, Recruiting, IT, Admin)
+- 20 modules: 10 Field (5 Type A, 5 Type B), 10 Office (5 Type A, 5 Type B)
+- At least one Module B with deployment date >4 weeks out per staff type (triggers early flag)
+- 10 dAdmin employees, each assigned 2 modules
 - README with login instructions and suggested test flows
 
-> **As-built note:** Seed data shipped larger than originally scoped — 141 employees across 3 practices (Banking, Transportation, Restructuring), 3 support depts (Marketing, Human Capital, Design), Admin, and Region Ops, plus 4 modules and 3 projects, generated via `generateSeed.mjs`. The jump from "~8-10 identities" to 141 was a deliberate choice to get a realistic management-chain walk (PE-02b resolves chains by walking real `line_manager_id` pointers, not hardcoded role lookups) — a thin seed set would have made chain resolution trivially correct without actually testing the traversal logic. One module (MOD-003) has its delivery date manually set to 2026-08-15 to guarantee a clear early-flag margin. Two parking-lot items from seed data design: talent manager assignment is only wired at the Consultant level (PM and above have null TM, noted for production), and senior-consultant/partner-opt-out routing remains out of scope as originally specified. The README itself remains a parked item — deferred until all flow cards ship (now effectively ready to write).
+> **As-built note:** Seed data shipped larger than originally scoped — 144 employees across Field orgs (Account Management, Sales, Delivery) and Office orgs (Finance, Legal, Recruiting, IT, Admin), plus 20 modules. The jump from "~8-10 identities" to 144 was a deliberate choice to get a realistic management-chain walk (PE-02b resolves chains by walking real `line_manager_id` pointers, not hardcoded role lookups) — a thin seed set would have made chain resolution trivially correct without actually testing the traversal logic. Each org unit has a designated HR Rep employee referenced via `hr_rep_id` on each employee record. At least one Field Type B module and one Office Type B module have deployment dates set well beyond the 28-day early-flag threshold. `projects.json` and the `project_code` field on employee records were removed entirely — they were never read by application code. The README itself remains a parked item — deferred until all flow cards ship (now effectively ready to write).
 
 ---
 
@@ -373,7 +369,7 @@ Four flows plus one rejection. Together they exercise the full rule set surface 
 | Frontend framework | React via Vite | Industry standard, hiring-panel recognition, clean for a browser-only app. Next.js was considered and rejected — its routing/SSR complexity adds nothing for a client-only demo. |
 | Logic layer | Browser-side only, no backend | Policy engine runs entirely in JS on the client. Keeps the architecture simple and inspectable for a demo — there's no server to stand up, deploy, or explain. |
 | Local dev / coding assistant | Claude Code in VS Code, local machine | All code changes are written locally via Claude Code in VS Code, then pushed to GitHub. Replit pulls from GitHub rather than being the primary editing environment — Replit's role is hosting and execution, not authoring. |
-| Seed data format | JSON files | Relational structure between users, modules, roles, and delivery dates, hand-authored and machine-generated via `generateSeed.mjs`. Designed to swap cleanly for a real database in production — see Section 9. |
+| Seed data format | JSON files | Relational structure between users, modules, roles, and deployment dates. Generated via a Node.js script producing `employees.json` and `modules.json`. Designed to swap cleanly for a real database in production — see Section 9. |
 | Portfolio structure | Single URL, demo embedded in the portfolio site | One codebase, one deployment. A recruiter gets a seamless end-to-end experience without switching contexts or links. |
 | Version control | GitHub (private repo) as source of truth — local push via SSH, Replit pulls via a scoped access token stored as an encrypted secret | Standard split: a long-lived SSH key on the local machine handles push access and never leaves the machine; Replit holds a separate, rotatable, repo-scoped credential stored as an encrypted environment secret (never hardcoded into the remote URL) for pulling the latest code to run. |
 
@@ -408,7 +404,7 @@ This section is new in v1.0. It exists because a PRD that says "5 rules, 3 perso
 
 **What changed:** The original PE-02 card ("policy engine: rule selection + chain resolution") was a single M-sized ticket. It was split into PE-02a (`selectRule` — pure function, staff/module/case type + early flag → rule number) and PE-02b (`resolveApproverData` + `resolveChain` — walks the org hierarchy to produce named approvers).
 
-**Why:** The original card bundled two genuinely different kinds of logic under one acceptance criterion. Rule selection is pure — four inputs, one of five outputs, no dependencies, trivially unit-testable. Chain resolution requires reading the seed data, walking a `line_manager_id` chain upward with a cycle guard, resolving a talent manager pointer, and handling coverage gaps. Shipping these as one card meant either testing them together (so a chain-resolution bug could mask whether rule selection was even correct) or writing test scaffolding that artificially separated them anyway. Splitting made each piece independently verifiable — PE-02a shipped with 8/8 tests passing on pure rule logic before PE-02b touched a single file of seed data. This is the kind of split that's obvious in retrospect and easy to miss when a card is being scoped from a policy table rather than from the data dependencies underneath it.
+**Why:** The original card bundled two genuinely different kinds of logic under one acceptance criterion. Rule selection is pure — four inputs, one of five outputs, no dependencies, trivially unit-testable. Chain resolution requires reading the seed data, walking a `line_manager_id` chain upward with a cycle guard, resolving an HR Rep pointer (`hr_rep_id`), and handling coverage gaps. Shipping these as one card meant either testing them together (so a chain-resolution bug could mask whether rule selection was even correct) or writing test scaffolding that artificially separated them anyway. Splitting made each piece independently verifiable — PE-02a shipped with 8/8 tests passing on pure rule logic before PE-02b touched a single file of seed data. This is the kind of split that's obvious in retrospect and easy to miss when a card is being scoped from a policy table rather than from the data dependencies underneath it.
 
 ### Approver flow restructure: S-A1 → S-A1a/S-A1b; S-A2/S-A3 → merged S-A2; S-A4 → S-A3
 
@@ -433,7 +429,7 @@ This section is new in v1.0. It exists because a PRD that says "5 rules, 3 perso
 
 ### Fallback rule: unresolvable chain slot routes to dAdmin
 
-**What changed:** During chain resolution (PE-02b), if any role in the resolved approver chain can't be matched to a real person — most commonly a null `talent_manager_id`, but the same logic covers any broken or missing pointer in the management chain — that slot is filled by the dAdmin instead of the chain resolution simply failing or producing a gap. The substituted entry is flagged `isStandIn: true` and surfaces to the requestor as a "STAND-IN" badge on their approver-chain view (Decision #12, Section 7).
+**What changed:** During chain resolution (PE-02b), if any role in the resolved approver chain can't be matched to a real person — most commonly a null `hr_rep_id`, but the same logic covers any broken or missing pointer in the management chain — that slot is filled by the dAdmin instead of the chain resolution simply failing or producing a gap. The substituted entry is flagged `isStandIn: true` and surfaces to the requestor as a "STAND-IN" badge on their approver-chain view (Decision #12, Section 7).
 
 **Why:** This was framed early as "coverage gap" handling — what happens if someone's on leave or a role is vacant — but its real significance is broader: it's a **redundancy guarantee for the routing engine itself**. A policy-driven, data-resolved chain (Decision: configurable rules, Section 5) is only as reliable as the org data it walks. Org data will have gaps — vacant roles, broken reporting lines, employees who left without a backfill recorded yet. Rather than letting a gap become a dead end (a case nobody can act on, with no recipient at all), the system guarantees that **every chain always resolves to someone** by falling back to the dAdmin, who is already the chain's terminal authority and therefore an appropriate escalation point regardless of which intermediate role went missing.
 

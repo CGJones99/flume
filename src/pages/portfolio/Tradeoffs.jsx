@@ -18,9 +18,9 @@ const DECISIONS = [
   {
     num: '03',
     title: 'ESCALATION RULE SIMPLIFICATION',
-    sub: 'Specialist routing + consultant seniority',
+    sub: 'Multiple staff types + seniority',
     body: [
-      'The real-world policy matrix includes a specialist staff type (functions like Support in ~95% of cases) and seniority-based routing variations for consultants. Both were scoped out of the demo in favor of a clean binary model: Consultant or Support, Module A or B, Business or Personal. The simplification keeps the policy engine testable against a complete but bounded rule set. Both omissions are documented for future implementation.',
+      'A real-world policy matrix would include multiple staff types and seniority-based routing variations. Both were scoped out of the demo in favor of a clean binary model: Field or Office, Module A or B, Business or Personal. The simplification keeps the policy engine testable against a complete but bounded rule set. Both omissions are documented in Production Notes for future implementation.',
     ],
   },
   {
@@ -28,7 +28,7 @@ const DECISIONS = [
     title: 'MOCK NOTIFICATION INBOX — KILLED',
     sub: '2026-06-09',
     body: [
-      'The original scope included an in-app mock email inbox to demonstrate notification-driven behavior without requiring a real integration. During build review, the inbox was cut for two reasons. First, it was theater: a fake email client inside a case management tool that a recruiter would immediately read as simulated, not functional. Second, it introduced meaningful confusion risk during a seeded demo walkthrough — a recruiter switching personas would encounter an inbox that looked like a distinct product surface, not a feature of the routing flow.',
+      'The original scope included an in-app mock email inbox to demonstrate notification-driven behavior without requiring a real integration. During build review, the inbox was cut for two reasons. First, it was theater: a fake email client inside a case management tool that a user would immediately read as simulated, not functional. Second, it introduced meaningful confusion risk during a seeded demo walkthrough — a user switching personas would encounter an inbox that looked like a distinct product surface, not a feature of the routing flow.',
       'The replacement is an audit log system event written at every routing step (SYSTEM → Notification sent to [Name] ([Role])), surfaced inline on the relevant case views. This keeps the notification story honest — it records that the action happened and who was targeted — without pretending to be an email client. Production channel remains Microsoft Teams, noted as a one-liner on each system event entry. Audit log display rules by role were locked at the same time: eIDs never render outside the dAdmin view; requestors see name, role, timestamp, and event type only; approvers receive the same treatment; dAdmins see the full log including eIDs.',
     ],
   },
@@ -37,7 +37,7 @@ const DECISIONS = [
     title: 'CASE STORE PERSISTENCE — IN-MEMORY BY DESIGN',
     sub: '2026-06-09',
     body: [
-      'Case and event state lives in React context only. No localStorage, sessionStorage, or external database. The decision was made on two grounds. First, isolation: each recruiter running the demo gets a clean state with no risk of stale data from a prior session or conflicts from a concurrent viewer — persistence would require a reset mechanism and guards against cross-session pollution, adding complexity with no demo value. Second, simplicity: the demo is a single-session walkthrough, and in-memory state survives persona switches (which use client-side navigation without a page reload) cleanly.',
+      'Case and event state lives in React context only. No localStorage, sessionStorage, or external database. The decision was made on two grounds. First, isolation: each user running the demo gets a clean state with no risk of stale data from a prior session or conflicts from a concurrent viewer — persistence would require a reset mechanism and guards against cross-session pollution, adding complexity with no demo value. Second, simplicity: the demo is a single-session walkthrough, and in-memory state survives persona switches (which use client-side navigation without a page reload) cleanly.',
       'The known limitation is that a full page refresh resets all case state, which is flagged in the demo README. Production would replace the in-memory store with a real database, with the context layer acting as the interface boundary — the switch requires no changes to any component that consumes the store.',
     ],
   },
@@ -47,7 +47,7 @@ const DECISIONS = [
     sub: '2026-06-10',
     body: [
       'Two terminal status values were locked: fully_approved and denied. The write occurs at dAdmin final signoff or on mid-chain denial by any intermediary approver. Cases reaching either terminal status route automatically to a historical view — a past cases bucket on the requestor dashboard and a closed cases stack within each module on the dAdmin view.',
-      'This was a production-motivated decision: a requestor who can\'t see the outcome of a closed case loses the CYA visibility that was a core reason for them engaging with the tool at all. The dAdmin module split (active vs past, keyed on delivery date) similarly reflects real operational logic — past modules can still carry open cases, such as a discretionary late approval, and dAdmins need to see those without them cluttering the active module view.',
+      'This was a production-motivated decision: a requestor who can\'t see the outcome of a closed case loses the CYA visibility that was a core reason for them engaging with the tool at all. The dAdmin module split (active vs past, keyed on deployment date) similarly reflects real operational logic — past modules can still carry open cases, such as a discretionary late approval, and dAdmins need to see those without them cluttering the active module view.',
     ],
   },
   {
@@ -68,19 +68,25 @@ export default function Tradeoffs() {
         <span className="ps-eyebrow">SEVEN DECISIONS</span>
         <h1 className="ps-title">TRADEOFFS &amp; RETRO</h1>
         <p className="ps-tagline">
-          APM roles respond to case study structure. The decisions log is raw material,
-          not the artifact — the arc shows judgment, not just output.
+          Seven decisions made during the build. Each one documented while the
+          reasoning was still fresh.
         </p>
       </section>
 
       <section className="ps-section">
-        <span className="ps-section-label">PATTERN TO WATCH FOR</span>
-        <div className="ps-prose decisions-intro-prose">
+        <span className="ps-section-label">RETROSPECTIVE</span>
+        <div className="ps-prose">
           <p>
-            Three of the seven decisions below share an underlying pattern worth naming up
-            front: scoping decisions that looked atomic turned out to have independent
-            concerns only visible under build pressure. The three are the PE-02 split, the
-            mock inbox kill, and the audit log redistribution. The close returns to it.
+            Some of these decisions trace back to decomposition — scoped work that
+            looked atomic turned out to have independent concerns only visible under
+            build pressure. Thinking in features, not independently testable units
+            of behavior. Wireframing earlier would have surfaced those before the
+            build did.
+          </p>
+          <p>
+            The rest were made in motion. The build surfaced a constraint or a wrong
+            assumption and the right call was to change course rather than defend the
+            plan. Some decisions you plan. The rest the build hands you.
           </p>
         </div>
       </section>
@@ -100,25 +106,6 @@ export default function Tradeoffs() {
               </div>
             </div>
           ))}
-        </div>
-      </section>
-
-      <section className="ps-section">
-        <span className="ps-section-label">RETROSPECTIVE</span>
-        <div className="ps-prose">
-          <p>
-            The pattern across three of the seven: scoped work that looked atomic wasn't,
-            and that only became visible under build pressure. PE-02 split, mock inbox kill,
-            audit log redistribution — all three trace back to the same root cause.
-            Decomposition discipline wasn't tight enough at scoping time. The work was
-            planned in features, not in independently testable units of behavior.
-          </p>
-          <p>
-            Wireframing or deeper brainstorming earlier would have surfaced all three before
-            build pressure did. Not a confession — the right call was made in each case, and
-            made quickly. But the cost of the correction was real, and it was the same cost
-            three times.
-          </p>
         </div>
       </section>
     </div>

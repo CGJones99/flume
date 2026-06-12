@@ -2,9 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PortfolioLayout from './layouts/PortfolioLayout'
 import DemoLayout from './layouts/DemoLayout'
 import Problem from './pages/portfolio/Problem'
-import Approach from './pages/portfolio/Approach'
-import Decisions from './pages/portfolio/Decisions'
 import Build from './pages/portfolio/Build'
+import Tradeoffs from './pages/portfolio/Tradeoffs'
 import Login from './pages/Login'
 import RoleDashboard from './pages/RoleDashboard'
 import RequestorStub from './pages/stubs/RequestorStub'
@@ -24,9 +23,8 @@ export default function App() {
       <Routes>
         <Route element={<PortfolioLayout />}>
           <Route index element={<Problem />} />
-          <Route path="approach"  element={<Approach />} />
-          <Route path="decisions" element={<Decisions />} />
-          <Route path="build"     element={<Build />} />
+          <Route path="build"      element={<Build />} />
+          <Route path="tradeoffs"  element={<Tradeoffs />} />
         </Route>
         <Route path="demo" element={<DemoLayout />}>
           <Route index          element={<Login />} />

@@ -1,12 +1,13 @@
 import { NavLink, Outlet } from 'react-router-dom'
 
 const NAV_LINKS = [
-  { to: '/',           label: 'PROBLEM',   end: true },
-  { to: '/approach',   label: 'APPROACH'             },
-  { to: '/decisions',  label: 'DECISIONS'            },
-  { to: '/build',      label: 'BUILD'                },
-  { to: '/demo',       label: 'DEMO'                 },
+  { to: '/',           label: 'PROBLEM',           end: true },
+  { to: '/build',      label: 'BUILD'                        },
+  { to: '/tradeoffs',  label: 'TRADEOFFS & RETRO'            },
+  { to: '/demo',       label: 'DEMO'                         },
 ]
+
+const FOOTER_COPY = 'FLUME is a portfolio proof of concept. It is not a commercial product, not for sale, and not for redistribution. The system design and policy rules are generalized abstractions inspired by real operational challenges in resource allocation and compliance. Any resemblance to specific organizations, individuals, or internal processes is coincidental. No confidential information has been disclosed.'
 
 export default function PortfolioLayout() {
   return (
@@ -31,6 +32,9 @@ export default function PortfolioLayout() {
       <main className="portfolio-content">
         <Outlet />
       </main>
+      <footer className="portfolio-footer">
+        <p className="portfolio-footer-text">{FOOTER_COPY}</p>
+      </footer>
     </div>
   )
 }

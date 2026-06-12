@@ -936,6 +936,434 @@ body {
   padding: 14px 16px;
 }
 
+/* ── Portfolio Footer ───────────────────────────────────── */
+
+.portfolio-footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 24px 32px;
+  background: var(--bg-elevated);
+  flex-shrink: 0;
+}
+
+.portfolio-footer-text {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  max-width: 960px;
+}
+
+/* ── Portfolio Pages — Shared Layout ────────────────────── */
+
+.ps-page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 64px 32px 96px;
+  display: flex;
+  flex-direction: column;
+}
+
+.ps-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.ps-eyebrow {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.ps-title {
+  font-family: var(--font-display);
+  font-size: 72px;
+  font-weight: normal;
+  letter-spacing: 0.35em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.ps-tagline {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 580px;
+}
+
+.ps-section {
+  padding-top: 48px;
+  padding-bottom: 48px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ps-section:last-child {
+  border-bottom: none;
+}
+
+.ps-section-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.ps-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ps-prose p {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* ── Tradeoffs & Retro page ─────────────────────────────── */
+
+.decisions-section {
+  gap: 0;
+}
+
+.decision-entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.decision-entry {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 32px;
+  padding: 36px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.decision-entry:last-child {
+  border-bottom: none;
+}
+
+.decision-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 2px;
+}
+
+.decision-num {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--cyan);
+}
+
+.decision-title {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+.decision-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.decision-prose {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.decision-prose p {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+/* ── Build page — PRD expand ────────────────────────────── */
+
+.prd-expand {
+  border: 1px solid var(--border-soft);
+}
+
+.prd-expand[open] {
+  border-color: var(--border-hard);
+}
+
+.prd-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  cursor: pointer;
+  background: var(--bg-elevated);
+  list-style: none;
+  user-select: none;
+  transition: background 0.1s;
+}
+
+.prd-summary::-webkit-details-marker {
+  display: none;
+}
+
+.prd-summary::marker {
+  display: none;
+}
+
+.prd-summary:hover {
+  background: var(--bg-card);
+}
+
+.prd-summary-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.prd-summary-hint {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.prd-expand:not([open]) .prd-summary-hint::after {
+  content: 'EXPAND';
+}
+
+.prd-expand[open] .prd-summary-hint::after {
+  content: 'COLLAPSE';
+  color: var(--cyan);
+}
+
+.prd-content {
+  padding: 32px 28px;
+  border-top: 1px solid var(--border-soft);
+  overflow-x: auto;
+}
+
+.prd-doc {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.prd-h1 {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0.18em;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  padding-top: 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-hard);
+  margin-bottom: 2px;
+}
+
+.prd-h2 {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 0.18em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding-top: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.prd-h3 {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: normal;
+  letter-spacing: 0.16em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.prd-p {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.prd-bq {
+  border-left: 2px solid var(--border-hard);
+  padding: 12px 16px;
+  background: var(--bg-elevated);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prd-bq-p {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+.prd-hr {
+  border: none;
+  border-top: 1px solid var(--border-soft);
+  margin: 4px 0;
+}
+
+.prd-ul,
+.prd-ol {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.prd-li {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.prd-inline-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--cyan);
+  background: var(--bg-elevated);
+  padding: 1px 5px;
+}
+
+/* ── Build page — PRD tables ────────────────────────────── */
+
+.prd-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-soft);
+}
+
+.prd-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prd-table thead tr {
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-hard);
+}
+
+.prd-th {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  text-align: left;
+  padding: 10px 14px;
+  white-space: nowrap;
+}
+
+.prd-tr {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.prd-tr:last-child {
+  border-bottom: none;
+}
+
+.prd-td {
+  font-family: var(--font-body);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  vertical-align: top;
+}
+
+.prd-td--key {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.prd-td--val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--cyan);
+  white-space: nowrap;
+}
+
+/* ── Build page — forward-looking list ──────────────────── */
+
+.build-fwd-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.build-fwd-item {
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  padding: 14px 0 14px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  border-left: 2px solid var(--border-hard);
+}
+
+.build-fwd-item:last-child {
+  border-bottom: none;
+}
+
+/* ── Build page — Notion board link ─────────────────────── */
+
+.notion-link {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  border: 1px solid var(--border-hard);
+  padding: 12px 24px;
+  align-self: flex-start;
+  transition: border-color 0.1s, color 0.1s;
+}
+
+.notion-link:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.notion-link--pending {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 /* S-R8: unread past case row — pulses cyan until expanded */
 @keyframes rd-row-unread-pulse {
   0%, 100% { box-shadow: inset 0 0 0 1px var(--cyan); }

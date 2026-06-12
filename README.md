@@ -1,6 +1,6 @@
 # Flume
 
-**Structured case management for exception requests in cost-center departments.**
+**Structured case management for resource-policy exceptions in cost-center departments.**
 Auto-routed. Auditable. Every delay has a named responsible party.
 
 [Live Demo](https://flume.replit.app) · [Portfolio Writeup](https://conorjones.dev/work/flume)
@@ -9,7 +9,7 @@ Auto-routed. Auditable. Every delay has a named responsible party.
 
 ## What it does
 
-A cost-center department's budget leaks because the process to request exceptions is run entirely through email — no routing, no accountability, no audit trail. Staff are discouraged from even trying to comply with policy.
+A cost-center department's budget leaks because the process to request exceptions is run entirely through email, with no routing, no accountability, and no audit trail. Staff are discouraged from even trying to comply with policy. This demo implements one exception variant end to end: cancellation, releasing a committed resource to free budget.
 
 Flume replaces that with a structured workflow: submit a case, the system resolves the correct approver chain from policy, routes it automatically, and timestamps every action. Leadership gets full visibility. Every delay has a name attached to it.
 

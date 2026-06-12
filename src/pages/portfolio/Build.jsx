@@ -143,6 +143,7 @@ function MarkdownDoc({ source }) {
 // ── Static content ───────────────────────────────────────────────────────────
 
 const FWD_ITEMS = [
+  'Additional exception variants. The demo ships cancellation (releasing a committed resource); the same policy-routing and audit spine carries provisioning (resources requested outside standard policy for a special use case) and capacity increases (raising an allocated ceiling for a unique need). Each enters the chain with its own policy rules; the engine does not change.',
   'Sysadmin configuration UI — module assignment, dAdmin mapping, and policy matrix edits with dept leadership confirmation before publishing.',
   'Leadership visibility layer — cross-department exception trend reporting; distinct from the dAdmin module view, which is operational rather than analytical.',
   'Notification integrations — Microsoft Teams (primary target), Slack, and email; the audit log event model is already structured for a delivery layer without changes to routing logic.',

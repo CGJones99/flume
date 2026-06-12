@@ -5,7 +5,7 @@
 **Status:** In build (living document — see Section 12)
 **Next:** Portfolio site (PS-01 → PS-05)
 
-Structured case management for exception requests in cost-center departments. Replaces email chaos with auditable, auto-routed approval chains — so leadership stops chasing and starts enforcing.
+Structured case management for resource-policy exceptions in cost-center departments. Replaces email chaos with auditable, auto-routed approval chains, so leadership stops chasing and starts enforcing.
 
 ---
 
@@ -31,6 +31,8 @@ Structured case management for exception requests in cost-center departments. Re
 A cost-center department's budget is not being spent effectively due to a high-friction manual process to request exceptions to resource commitments — a process so painful that staff are discouraged from even trying to comply with policy.
 
 That process is entirely run through email, relies on individual interpretation of policy, and has no auditability. As a result, leadership has no view into the process. They can neither support the managing department nor address problematic teams.
+
+Flume models this as exception management: any request to deviate from standard resource policy. This demo implements one variant end to end: cancellation, releasing a committed resource to free budget. The same routing-and-audit spine extends to other variants without touching the engine: provisioning (requesting resources outside standard policy for a special use case) and capacity increase (raising an allocated ceiling for a unique need). Each is a different reason to enter the chain. The chain itself, with its policy routing, named accountability, and full audit, is the product.
 
 ---
 

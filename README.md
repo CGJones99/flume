@@ -3,7 +3,7 @@
 **Structured case management for resource-policy exceptions in cost-center departments.**
 Auto-routed. Auditable. Every delay has a named responsible party.
 
-[Live Demo](https://flume--cgjones.replit.app)
+[Live Demo](https://flume--cgjones.replit.app) · [GitHub](https://github.com/CGJones99/flume)
 
 ---
 

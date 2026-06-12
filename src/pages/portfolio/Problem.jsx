@@ -2,7 +2,7 @@ export default function Problem() {
   return (
     <div className="ps-page">
       <section className="ps-hero">
-        <span className="ps-eyebrow">EXCEPTION REQUEST MANAGEMENT</span>
+        <span className="ps-eyebrow">EXCEPTION REQUEST ROUTING AND MANAGEMENT</span>
         <h1 className="ps-title">FLUME</h1>
         <p className="ps-tagline">
           Structured case management for exception requests in cost-center departments.

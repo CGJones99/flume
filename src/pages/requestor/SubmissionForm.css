@@ -5,12 +5,30 @@
   flex-direction: column;
   gap: 32px;
   max-width: 640px;
-  padding: 48px 32px 88px;
+  padding: 32px 32px 48px;
   margin: 0 auto;
   width: 100%;
 }
 
 /* Page title */
+
+.sf-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sf-eyebrow {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.sf-eyebrow::before {
+  content: '// ';
+}
 
 .sf-page-title {
   font-family: var(--font-display);
@@ -21,11 +39,34 @@
   text-transform: uppercase;
 }
 
-/* Read-only header block */
+/* Read-only header block — registration corners mark it as system-resolved data */
 
 .sf-header {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border-soft);
+}
+
+.sf-header::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid var(--cyan);
+  border-left: 1px solid var(--cyan);
+}
+
+.sf-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 10px;
+  height: 10px;
+  border-bottom: 1px solid var(--cyan);
+  border-right: 1px solid var(--cyan);
 }
 
 .sf-header-row {
@@ -51,7 +92,7 @@
   letter-spacing: 0.18em;
   color: var(--text-muted);
   text-transform: uppercase;
-  min-width: 88px;
+  min-width: 96px;
   flex-shrink: 0;
 }
 
@@ -105,11 +146,17 @@
   background-repeat: no-repeat;
   background-position: right 14px center;
   width: 100%;
-  transition: border-color 0.1s;
+  transition: border-color 0.1s, box-shadow 0.1s;
 }
 
 .sf-select:focus {
   border-color: var(--cyan);
+  box-shadow: inset 0 0 14px rgba(127, 227, 212, 0.08);
+}
+
+.sf-select option {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
 }
 
 .sf-textarea {
@@ -126,7 +173,7 @@
   min-height: 148px;
   width: 100%;
   caret-color: var(--cyan);
-  transition: border-color 0.1s;
+  transition: border-color 0.1s, box-shadow 0.1s;
 }
 
 .sf-textarea::placeholder {
@@ -138,6 +185,7 @@
 
 .sf-textarea:focus {
   border-color: var(--cyan);
+  box-shadow: inset 0 0 14px rgba(127, 227, 212, 0.08);
 }
 
 .sf-textarea:disabled {
@@ -178,40 +226,30 @@
 }
 
 /*
- * Chamfered button — eight-sided with diagonal cuts at all four corners.
- * clip-path clips the element shape; background provides the fill/border contrast.
- * The disabled state is visually dormant (low contrast) per design system rules.
+ * Chamfer geometry and border layers come from the shared system in
+ * index.css. Dormant state keeps a soft border so the shape stays
+ * readable — desaturated and dark, not invisible.
  */
 .sf-submit-btn {
-  font-family: var(--font-display);
+  --ch: 14px;
+  --chb: var(--border-soft);
+  --chf: var(--bg-elevated);
   font-size: 11px;
   letter-spacing: 0.22em;
-  text-transform: uppercase;
-  padding: 14px 52px;
-  border: none;
-  outline: none;
-  cursor: not-allowed;
-  background: var(--bg-elevated);
   color: var(--text-muted);
-  clip-path: polygon(
-    14px   0%,
-    calc(100% - 14px) 0%,
-    100%   14px,
-    100%   calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    14px   100%,
-    0%     calc(100% - 14px),
-    0%     14px
-  );
-  transition: background 0.12s, color 0.12s;
+  padding: 15px 52px;
+  cursor: not-allowed;
 }
 
 .sf-submit-btn--active {
-  background: var(--orange);
+  --chb: var(--orange);
+  --chf: var(--orange);
   color: var(--bg-base);
   cursor: pointer;
 }
 
 .sf-submit-btn--active:hover {
-  background: var(--text-primary);
+  --chb: var(--orange-hot);
+  --chf: var(--orange-hot);
+  filter: drop-shadow(0 0 12px rgba(255, 179, 71, 0.45));
 }

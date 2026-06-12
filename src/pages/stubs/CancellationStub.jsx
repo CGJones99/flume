@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useCaseStore } from '../../context/CaseStoreContext'
 import modules from '../../data/modules.json'
 import SubmissionForm from '../requestor/SubmissionForm'
+import DemoHeader from '../../components/DemoHeader'
 
 export default function CancellationStub() {
   const { user } = useAuth()
@@ -47,12 +48,11 @@ export default function CancellationStub() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/requestor')}>
-          ← MODULES
-        </button>
-      </div>
+      <DemoHeader
+        context="REQUESTOR // NEW CASE"
+        backLabel="MODULES"
+        backTo="/demo/requestor"
+      />
       <div className="requestor-content">
         <SubmissionForm module={mod} onSubmit={handleSubmit} />
       </div>

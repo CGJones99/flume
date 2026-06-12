@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCaseStore } from '../../context/CaseStoreContext'
 import CaseHistory from '../../components/CaseHistory'
+import DemoHeader from '../../components/DemoHeader'
 import modules from '../../data/modules.json'
 import employees from '../../data/employees.json'
 import './ApproverCaseView.css'
@@ -122,12 +123,11 @@ export default function ApproverCaseView() {
 
   return (
     <div className="acv-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/approver/dashboard')}>
-          ← PENDING CASES
-        </button>
-      </div>
+      <DemoHeader
+        context="APPROVER // CASE REVIEW"
+        backLabel="PENDING CASES"
+        backTo="/demo/approver/dashboard"
+      />
 
       <div className="acv-body">
 

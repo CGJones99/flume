@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useCaseStore } from '../context/CaseStoreContext'
 import { useRequestorRead } from '../context/RequestorReadContext'
+import DemoHeader from '../components/DemoHeader'
 
 const APPROVER_ROLES = [
   'Team Lead', 'Senior Director',
@@ -23,6 +24,13 @@ export default function RoleDashboard() {
   if (!user) return null
 
   const isApprover = APPROVER_ROLES.includes(user.role) || user.role === 'dAdmin'
+
+  // Admins (dAdmin, staff_type "admin") sit purely as a supervisory/process role —
+  // they route and decide but don't consume modules, so they have no eligible
+  // module to raise a cancellation against. Gate the requestor tile off for them
+  // rather than route into an empty module selector. (A future revision could opt
+  // admins in as participants by giving them a Field/Office staff_type.)
+  const canRequest = user.staff_type !== 'admin'
 
   // Cases where this user is the current approver, split by whether it's a dAdmin final-signoff
   // slot (roleLabel === 'Dept Admin') or an intermediate approver step.
@@ -50,8 +58,8 @@ export default function RoleDashboard() {
   const tiles = [
     {
       id:         'requestor',
-      action:     'REQUEST A CANCELLATION',
-      active:     true,
+      action:     'Submit and Track Cancellation Requests',
+      active:     canRequest,
       path:       '/demo/requestor/dashboard',
       count:      unreadClosedCount,
       countLabel: unreadClosedCount === 1
@@ -76,12 +84,7 @@ export default function RoleDashboard() {
 
   return (
     <div className="dashboard-root">
-      <div className="dashboard-header">
-        <span className="dashboard-wordmark">FLUME</span>
-        <span className="dashboard-identity">
-          {user.employee_id} — {user.name}
-        </span>
-      </div>
+      <DemoHeader context="ROLE SELECT" />
       <div className="dashboard-tiles">
         {tiles.filter(t => t.active).map(tile => {
           const isPulse = tile.active && tile.count > 0

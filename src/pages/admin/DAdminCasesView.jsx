@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useCaseStore } from '../../context/CaseStoreContext'
 import modules from '../../data/modules.json'
 import employees from '../../data/employees.json'
+import DemoHeader from '../../components/DemoHeader'
 import './DAdminCasesView.css'
 
 const empMap = new Map(employees.map(e => [e.employee_id, e]))
@@ -46,19 +47,18 @@ export default function DAdminCasesView() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/admin')}>
-          ← MODULES
-        </button>
-      </div>
+      <DemoHeader
+        context="DEPT ADMIN // CASE MONITOR"
+        backLabel="MODULES"
+        backTo="/demo/admin"
+      />
 
       <div className="rd-content">
         <div className="rd-top-bar">
-          <h1 className="rd-title">{mod.module_name}</h1>
-          <span className="dac-module-meta">
-            {mod.module_id} — TYPE {mod.module_type}
-          </span>
+          <div className="rd-title-block">
+            <span className="rd-eyebrow">{mod.module_id} — TYPE {mod.module_type}</span>
+            <h1 className="rd-title">{mod.module_name}</h1>
+          </div>
         </div>
 
         <div className="dac-section">

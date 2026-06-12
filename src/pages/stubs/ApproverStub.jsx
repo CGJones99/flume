@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import DemoHeader from '../../components/DemoHeader'
 
 export default function ApproverStub() {
   const { user } = useAuth()
@@ -14,12 +15,11 @@ export default function ApproverStub() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
-          ← DASHBOARD
-        </button>
-      </div>
+      <DemoHeader
+        context="APPROVER"
+        backLabel="DASHBOARD"
+        backTo="/demo/dashboard"
+      />
       <div className="stub-content">
         <h1 className="stub-title">APPROVER</h1>
         <p className="stub-note">view not yet built</p>

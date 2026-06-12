@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useCaseStore } from '../../context/CaseStoreContext'
 import CaseHistory from '../../components/CaseHistory'
+import DemoHeader from '../../components/DemoHeader'
 import modules from '../../data/modules.json'
 import employees from '../../data/employees.json'
 import '../approver/ApproverCaseView.css'
@@ -114,15 +115,11 @@ export default function DAdminCaseDetail() {
 
   return (
     <div className="acv-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button
-          className="stub-back"
-          onClick={() => navigate(`/demo/admin/module/${caseRecord.module_id}`)}
-        >
-          ← {mod?.module_name ?? 'MODULE'}
-        </button>
-      </div>
+      <DemoHeader
+        context="DEPT ADMIN // FINAL SIGNOFF"
+        backLabel={mod?.module_name ?? 'MODULE'}
+        backTo={`/demo/admin/module/${caseRecord.module_id}`}
+      />
 
       <div className="acv-body">
 

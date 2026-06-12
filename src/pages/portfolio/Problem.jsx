@@ -42,6 +42,26 @@ export default function Problem() {
           </p>
         </div>
       </section>
+
+      <section className="ps-section">
+        <span className="ps-section-label">ONE VARIANT, BUILT END-TO-END</span>
+        <div className="ps-prose">
+          <p>
+            An exception is any request to deviate from standard resource policy.
+            This demo implements one of them: <strong>cancellation</strong>, releasing
+            a committed resource to free budget. It is built the whole way through,
+            from submission to dAdmin signoff and audit close.
+          </p>
+          <p>
+            The routing engine and audit model are deliberately variant-agnostic.
+            The same spine extends to <strong>provisioning</strong> (requesting
+            resources outside standard policy for a special use case) and{' '}
+            <strong>capacity increase</strong> (raising an allocated ceiling for a
+            unique need). Flume funnels each variant through a frictionless and
+            accountable process.
+          </p>
+        </div>
+      </section>
     </div>
   )
 }

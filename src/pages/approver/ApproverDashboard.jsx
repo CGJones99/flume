@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useCaseStore } from '../../context/CaseStoreContext'
 import modules from '../../data/modules.json'
 import employees from '../../data/employees.json'
+import DemoHeader from '../../components/DemoHeader'
 import './ApproverDashboard.css'
 
 const empMap = new Map(employees.map(e => [e.employee_id, e]))
@@ -37,16 +38,18 @@ export default function ApproverDashboard() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
-          ← ROLE SELECT
-        </button>
-      </div>
+      <DemoHeader
+        context="APPROVER // DECISION QUEUE"
+        backLabel="ROLE SELECT"
+        backTo="/demo/dashboard"
+      />
 
       <div className="rd-content">
         <div className="rd-top-bar">
-          <h1 className="rd-title">Pending Decisions</h1>
+          <div className="rd-title-block">
+            <span className="rd-eyebrow">AWAITING YOUR ACTION</span>
+            <h1 className="rd-title">Pending Decisions</h1>
+          </div>
         </div>
 
         {pendingCases.length === 0 ? (

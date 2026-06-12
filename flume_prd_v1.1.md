@@ -5,7 +5,7 @@
 **Status:** In build (living document — see Section 12)
 **Next:** Portfolio site (PS-01 → PS-05)
 
-Structured case management for exception requests in cost-center departments. Replaces email chaos with auditable, auto-routed approval chains — so leadership stops chasing and starts enforcing.
+Structured case management for resource-policy exceptions in cost-center departments. Replaces email chaos with auditable, auto-routed approval chains, so leadership stops chasing and starts enforcing.
 
 ---
 
@@ -31,6 +31,8 @@ Structured case management for exception requests in cost-center departments. Re
 A cost-center department's budget is not being spent effectively due to a high-friction manual process to request exceptions to resource commitments — a process so painful that staff are discouraged from even trying to comply with policy.
 
 That process is entirely run through email, relies on individual interpretation of policy, and has no auditability. As a result, leadership has no view into the process. They can neither support the managing department nor address problematic teams.
+
+Flume models this as exception management: any request to deviate from standard resource policy. This demo implements one variant end to end: cancellation, releasing a committed resource to free budget. The same routing-and-audit spine extends to other variants without touching the engine: provisioning (requesting resources outside standard policy for a special use case) and capacity increase (raising an allocated ceiling for a unique need). Each is a different reason to enter the chain. The chain itself, with its policy routing, named accountability, and full audit, is the product.
 
 ---
 
@@ -66,6 +68,8 @@ Five personas. Three are MVP. Two are documented for future scope.
 - **Failure mode:** Too many screens or manual steps → back to email.
 
 > **As-built note (2026-06-10):** The original framing of dAdmin as a single, undifferentiated "gatekeeper" persona undersold a real distinction that only became visible once the approver and dAdmin flows were both built: a dAdmin can show up on a case in *two different capacities* — as a regular intermediary approver (e.g. standing in for a vacant role via the coverage-gap clause) and separately as the *final* gatekeeper on their own modules. SETUP-03 had originally treated dAdmin as a flat "masterkey" role with access to all three dashboard tiles. Once both flows existed side-by-side, a dAdmin would see the same pending case pulse on both their APPROVER and DEPT ADMIN tiles, and could action a final-signoff case through the lower-friction approver screen — wrong character minimums, no eID visibility, wrong semantics. See Section 12 (Role Separation) for the fix. This is now reflected as an implicit dual-mode behavior of the dAdmin persona, not a documentation change to the persona card itself — the *need* and *motivation* above still hold, but "gatekeeper" now means two distinct UI surfaces depending on the case's position in the chain.
+
+> **As-built note (2026-06-12): dAdmin is supervisory only — not a requestor.** dAdmin employees carry the staff type `admin` and are not assigned to any module. A requestor's module list is filtered by `allowed_staff_type === user.staff_type` (see S-R1, Section 04), so an `admin` staff type resolves to zero eligible modules — a dAdmin has no exception to raise because they don't consume modules in the first place. This surfaced when signing in as a dAdmin and attempting to submit: the module selector was empty with no explanation, reading as broken rather than "not applicable." The fix scopes the dAdmin to a purely supervisory/process capacity for the demo: the **Submit and Track Cancellation Requests** tile is gated off the role-select screen for `staff_type === 'admin'`, so a dAdmin sees only the APPROVER and DEPT ADMIN tiles. Note this boundary is specific to dAdmin — every *other* approver role (Team Lead, Senior Director, Line Manager, Senior Manager, Department Head, HR Rep) keeps a Field or Office staff type and can therefore act as a requestor in addition to approving. Admins are deliberately positioned as oversight-only here; opting them in as participants later is a one-field change (give them a Field or Office staff type), not a re-architecture.
 
 ### Firm Leadership (Future)
 - **Need:** Information quality. Exception surfacing. Confidence in data integrity.

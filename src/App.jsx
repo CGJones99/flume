@@ -6,6 +6,7 @@ import Build from './pages/portfolio/Build'
 import Tradeoffs from './pages/portfolio/Tradeoffs'
 import Login from './pages/Login'
 import RoleDashboard from './pages/RoleDashboard'
+import RequireRequestor from './components/RequireRequestor'
 import RequestorStub from './pages/stubs/RequestorStub'
 import RequestorDashboard from './pages/requestor/RequestorDashboard'
 import CancellationStub from './pages/stubs/CancellationStub'
@@ -29,10 +30,12 @@ export default function App() {
         <Route path="demo" element={<DemoLayout />}>
           <Route index          element={<Login />} />
           <Route path="dashboard" element={<RoleDashboard />} />
-          <Route path="requestor/dashboard" element={<RequestorDashboard />} />
-          <Route path="requestor" element={<RequestorStub />} />
-          <Route path="requestor/confirm" element={<SubmissionConfirmation />} />
-          <Route path="requestor/:moduleId" element={<CancellationStub />} />
+          <Route element={<RequireRequestor />}>
+            <Route path="requestor/dashboard" element={<RequestorDashboard />} />
+            <Route path="requestor" element={<RequestorStub />} />
+            <Route path="requestor/confirm" element={<SubmissionConfirmation />} />
+            <Route path="requestor/:moduleId" element={<CancellationStub />} />
+          </Route>
           <Route path="approver/dashboard" element={<ApproverDashboard />} />
           <Route path="approver/case/:caseId" element={<ApproverCaseView />} />
           <Route path="approver"  element={<ApproverStub />} />

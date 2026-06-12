@@ -5,6 +5,7 @@ import { useCaseStore } from '../../context/CaseStoreContext'
 import { useRequestorRead } from '../../context/RequestorReadContext'
 import modules from '../../data/modules.json'
 import employees from '../../data/employees.json'
+import DemoHeader from '../../components/DemoHeader'
 
 const empMap = new Map(employees.map(e => [e.employee_id, e]))
 const modMap  = new Map(modules.map(m => [m.module_id, m]))
@@ -125,16 +126,18 @@ export default function RequestorDashboard() {
 
   return (
     <div className="stub-root">
-      <div className="stub-header">
-        <span className="stub-wordmark">FLUME</span>
-        <button className="stub-back" onClick={() => navigate('/demo/dashboard')}>
-          ← ROLE SELECT
-        </button>
-      </div>
+      <DemoHeader
+        context="REQUESTOR // CASE QUEUE"
+        backLabel="ROLE SELECT"
+        backTo="/demo/dashboard"
+      />
 
       <div className="rd-content">
         <div className="rd-top-bar">
-          <h1 className="rd-title">Current Cancellation Requests</h1>
+          <div className="rd-title-block">
+            <span className="rd-eyebrow">ACTIVE SUBMISSIONS</span>
+            <h1 className="rd-title">Cancellation Requests</h1>
+          </div>
           <button className="rd-create-btn" onClick={() => navigate('/demo/requestor')}>
             Create a Case
           </button>

@@ -26,18 +26,23 @@ produces a full audit log. Every delay has a named responsible party.
 
 ## Policy engine (locked logic — do not modify without instruction)
 Five rules plus early flag bypass:
-1. Consultant + Business (A or B, no early flag): PM → Principal → Partner → Practice Head → dAdmin
-2. Consultant + Personal (A or B, no early flag): PM → Talent Manager → dAdmin
-3. Support + Business (A or B, no early flag): Line Manager → Dept Leader → Regional COO → dAdmin
-4. Support + Personal (A or B, no early flag): Line Manager → Talent Manager → dAdmin
+1. Field + Business (A or B, no early flag): Team Lead → Senior Director → dAdmin
+2. Field + Personal (A or B, no early flag): Team Lead → HR Rep → dAdmin
+3. Office + Business (A or B, no early flag): Line Manager → Senior Manager → Department Head → dAdmin
+4. Office + Personal (A or B, no early flag): Line Manager → HR Rep → dAdmin
 5. Any + Module B + Early flag (delivery >4 weeks from submission): dAdmin only, all others bypassed
+
+Staff type is Field or Office. dAdmins carry staff_type `admin` (supervisory only —
+not assigned to any module, so they never appear as a requestor; gated off the
+requestor flow at both the tile and the route). Any unresolvable chain slot
+(e.g. a null hr_rep_id) substitutes the dAdmin with an `isStandIn` flag.
 
 Early flag is system-calculated from module delivery date — never self-declared by requestor.
 
 ## Seed data
-- ~141 employees across staff types and approver roles
-- 4 modules (mix of type A and B)
-- MOD-003 delivery date set to 2026-08-15 to trigger early flag
+- ~141 employees across staff types and approver roles (10 dedicated dAdmins, staff_type `admin`)
+- 20 modules (mix of type A and B, Field and Office variants)
+- MOD-006 (Extended Field Rotation, type B) delivery date set to 2026-08-15 to trigger early flag
 - Cases and Events are not seeded — created by the app at runtime
 
 ## Design system (locked — do not drift)

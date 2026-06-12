@@ -52,7 +52,10 @@ export default function SubmissionForm({ module, onSubmit }) {
   return (
     <form className="sf-root" onSubmit={handleSubmit} noValidate>
 
-      <h1 className="sf-page-title">Cancellation Case</h1>
+      <div className="sf-title-block">
+        <span className="sf-eyebrow">CASE ENTRY</span>
+        <h1 className="sf-page-title">Cancellation Case</h1>
+      </div>
 
       <div className="sf-header">
         <div className="sf-header-row">

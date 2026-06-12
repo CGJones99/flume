@@ -25,7 +25,10 @@ export default function Login() {
   return (
     <div className="login-root">
       <div className="login-container">
-        <h1 className="login-wordmark">FLUME</h1>
+        <div className="login-masthead">
+          <h1 className="login-wordmark">FLUME</h1>
+          <span className="login-strip">EXCEPTION CASE ROUTING TERMINAL</span>
+        </div>
         <form className="login-form" onSubmit={handleSubmit} noValidate>
           <label className="login-label" htmlFor="eid-input">
             EMPLOYEE ID

@@ -1480,7 +1480,7 @@
     "hire_date": "2022-07-05",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1491,7 +1491,7 @@
     "hire_date": "2023-03-22",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1502,7 +1502,7 @@
     "hire_date": "2023-12-10",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1513,7 +1513,7 @@
     "hire_date": "2024-05-31",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1524,7 +1524,7 @@
     "hire_date": "2024-11-08",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1535,7 +1535,7 @@
     "hire_date": "2025-06-02",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1546,7 +1546,7 @@
     "hire_date": "2018-03-12",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1557,7 +1557,7 @@
     "hire_date": "2019-07-08",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1568,7 +1568,7 @@
     "hire_date": "2020-01-22",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   },
@@ -1579,7 +1579,7 @@
     "hire_date": "2020-06-15",
     "line_manager_id": null,
     "hr_rep_id": null,
-    "staff_type": null,
+    "staff_type": "admin",
     "org_unit": null,
     "role": "dAdmin"
   }

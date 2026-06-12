@@ -25,6 +25,13 @@ export default function RoleDashboard() {
 
   const isApprover = APPROVER_ROLES.includes(user.role) || user.role === 'dAdmin'
 
+  // Admins (dAdmin, staff_type "admin") sit purely as a supervisory/process role —
+  // they route and decide but don't consume modules, so they have no eligible
+  // module to raise a cancellation against. Gate the requestor tile off for them
+  // rather than route into an empty module selector. (A future revision could opt
+  // admins in as participants by giving them a Field/Office staff_type.)
+  const canRequest = user.staff_type !== 'admin'
+
   // Cases where this user is the current approver, split by whether it's a dAdmin final-signoff
   // slot (roleLabel === 'Dept Admin') or an intermediate approver step.
   // A dAdmin can appear in both buckets — e.g. standing in mid-chain vs. their own final slot.
@@ -52,7 +59,7 @@ export default function RoleDashboard() {
     {
       id:         'requestor',
       action:     'Submit and Track Cancellation Requests',
-      active:     true,
+      active:     canRequest,
       path:       '/demo/requestor/dashboard',
       count:      unreadClosedCount,
       countLabel: unreadClosedCount === 1

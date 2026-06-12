@@ -161,13 +161,17 @@ A denial at any step immediately closes the case. There is no escalation path an
 
 The early flag is calculated silently at submission and displayed only on the case detail view for approvers and dAdmin. Requestors do not see it and cannot influence it. This is intentional — routing logic should not be gameable by timing submissions.
 
+### Admins are supervisory only — they cannot raise cases
+
+dAdmin employees carry the staff type `admin` and are not assigned to any module. In this model the department admin is purely a supervisory/process role: they sit at the end of every approval chain and own module oversight, but they do not consume modules and therefore have no exception to raise against one. Because of that, the **Submit and Track Cancellation Requests** tile is hidden on the role-select screen when you sign in as a dAdmin — only the approver and admin tiles appear. (Every other approver role — Team Lead, Senior Director, Line Manager, and so on — keeps a Field or Office staff type, so those people *can* act as requestors as well as approve.) This is a deliberate boundary, not a missing feature: if a future revision wanted admins to participate as requestors, it would simply give them a Field or Office staff type.
+
 ---
 
 ## Seed data reference
 
 | Entity | Count | Notes |
 |--------|-------|-------|
-| Employees | 141 | Field and Office staff across org units; 10 dedicated dAdmin employees |
+| Employees | 141 | Field and Office staff across org units; 10 dedicated dAdmin employees (staff type `admin`, supervisory only — cannot raise cases) |
 | Modules | 20 | Type A and B; Field and Office variants |
 | Cases | 0 seeded | Created at runtime — reset on refresh |
 

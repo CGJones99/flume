@@ -17,7 +17,33 @@
   --font-mono:    'JetBrains Mono', monospace;
 
   --header-h: 56px;       /* demo chrome height — sticky thead offsets key off this */
-  --hud-clearance: 116px; /* bottom padding so content scrolls clear of the fixed HUD buttons */
+  --hud-clearance: 116px; /* reserved band so content scrolls clear of the fixed HUD buttons */
+}
+
+/*
+ * HUD clearance spacer.
+ *
+ * The RETURN TO PRD / SIGN OUT buttons are position:fixed at the viewport
+ * bottom on every demo screen. Naively we reserved room with padding-bottom on
+ * the scroll container — but browsers drop a scroll container's bottom padding
+ * at the scroll-end (true for block AND flex scrollers, and still inconsistent
+ * across Chromium/Safari). That's why the overlap kept "coming back" depending
+ * on the browser. A real trailing box does get counted in scroll height
+ * everywhere, so every demo scroll container ends with this spacer instead.
+ *
+ * display:block keeps it valid as a block scroller's last box; flex-basis
+ * reserves the band when the scroller is a flex column. Any new scrollable
+ * demo surface should add its ::after to this list.
+ */
+.rd-content::after,
+.requestor-content::after,
+.acv-left::after,
+.acv-right::after,
+.sc-content::after {
+  content: '';
+  display: block;
+  flex: 0 0 var(--hud-clearance);
+  min-height: var(--hud-clearance);
 }
 
 *, *::before, *::after {
@@ -857,7 +883,7 @@ body::after {
 .requestor-content {
   flex: 1;
   overflow-y: auto;
-  padding: 32px 32px var(--hud-clearance);
+  padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -880,7 +906,7 @@ body::after {
 .rd-content {
   flex: 1;
   overflow-y: auto;
-  padding: 32px 32px var(--hud-clearance);
+  padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 32px;

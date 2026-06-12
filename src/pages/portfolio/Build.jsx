@@ -160,8 +160,7 @@ const STACK_ROWS = [
   ['Portfolio structure', 'Single URL', 'One codebase, one deployment. Seamless recruiter experience without context switches or separate links.'],
 ]
 
-// Set to a public read-only Notion share URL before publishing
-const NOTION_BOARD_URL = null
+const NOTION_BOARD_URL = 'https://app.notion.com/p/36526ba5d4e4804792ebd21f518884ee?v=36526ba5d4e480d290eb000c04b38317&source=copy_link'
 
 // ── Component ────────────────────────────────────────────────────────────────
 

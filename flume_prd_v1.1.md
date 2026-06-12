@@ -204,22 +204,7 @@ As a dAdmin, I want to confirm that I have committed approved allocation changes
 
 The early flag is calculated by the system, not declared by the requestor (exploit prevention). If module type is **B** and deployment date is more than 4 weeks from submission, early flag = **YES**.
 
-| Staff | Module | Case | Early | Approver Chain | Final |
-|---|---|---|---|---|---|
-| Field | A | Business | n/a | Team Lead → Senior Director | dAdmin |
-| Field | A | Personal | n/a | Team Lead → HR Rep | dAdmin |
-| Office | A | Business | n/a | Line Mgr → Senior Manager → Department Head | dAdmin |
-| Office | A | Personal | n/a | Line Mgr → HR Rep | dAdmin |
-| Field | B | Business | No | Team Lead → Senior Director | dAdmin |
-| Field | B | Personal | No | Team Lead → HR Rep | dAdmin |
-| Office | B | Business | No | Line Mgr → Senior Manager → Department Head | dAdmin |
-| Office | B | Personal | No | Line Mgr → HR Rep | dAdmin |
-| Field | B | Business | Yes | (bypass all) | dAdmin only |
-| Field | B | Personal | Yes | (bypass all) | dAdmin only |
-| Office | B | Business | Yes | (bypass all) | dAdmin only |
-| Office | B | Personal | Yes | (bypass all) | dAdmin only |
-
-### Effective Rule Set
+### Base Rule Set
 
 Five rules plus the early-flag bypass:
 

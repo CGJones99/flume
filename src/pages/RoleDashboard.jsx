@@ -51,7 +51,7 @@ export default function RoleDashboard() {
   const tiles = [
     {
       id:         'requestor',
-      action:     'REQUEST A CANCELLATION',
+      action:     'Submit and Track Cancellation Requests',
       active:     true,
       path:       '/demo/requestor/dashboard',
       count:      unreadClosedCount,

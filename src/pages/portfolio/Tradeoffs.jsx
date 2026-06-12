@@ -65,11 +65,10 @@ export default function Tradeoffs() {
   return (
     <div className="ps-page">
       <section className="ps-hero">
-        <span className="ps-eyebrow">SEVEN DECISIONS</span>
+        <span className="ps-eyebrow"> THE SEVEN DECISIONS THAT SHAPED FLUME</span>
         <h1 className="ps-title">TRADEOFFS &amp; RETRO</h1>
         <p className="ps-tagline">
-          Seven decisions made during the build. Each one documented while the
-          reasoning was still fresh.
+          Seven decisions made during the build, changing it's shape from what I first imagined. Two core lessons: embracing flexibility in building, and properly pressure testing feature scoping.
         </p>
       </section>
 
@@ -77,16 +76,16 @@ export default function Tradeoffs() {
         <span className="ps-section-label">RETROSPECTIVE</span>
         <div className="ps-prose">
           <p>
-            Some of these decisions trace back to decomposition — scoped work that
-            looked atomic turned out to have independent concerns only visible under
-            build pressure. Thinking in features, not independently testable units
+            Some of these decisions trace back to the decomposition of scoped work. Tickets that
+            looked right-sized could be further broken down. These revealed themselves under
+            build pressure. I was thinking in features, not independently testable units
             of behavior. Wireframing earlier would have surfaced those before the
             build did.
           </p>
           <p>
             The rest were made in motion. The build surfaced a constraint or a wrong
             assumption and the right call was to change course rather than defend the
-            plan. Some decisions you plan. The rest the build hands you.
+            plan. A better design ended up emerging out of it.
           </p>
         </div>
       </section>

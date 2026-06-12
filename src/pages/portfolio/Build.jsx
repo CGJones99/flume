@@ -173,7 +173,7 @@ export default function Build() {
         <span className="ps-eyebrow">REFERENCE DEPTH</span>
         <h1 className="ps-title">BUILD</h1>
         <p className="ps-tagline">
-          For someone who wants to verify rigor rather than be persuaded by narrative.
+          For someone who wants to go deep on how Flume was made.
           The PRD, the stack decisions, and where this goes next.
         </p>
       </section>
@@ -202,7 +202,7 @@ export default function Build() {
       </section>
 
       <section className="ps-section">
-        <span className="ps-section-label">WHERE THIS GOES</span>
+        <span className="ps-section-label">FULL PRODUCTION FEATURES</span>
         <div className="ps-prose">
           <p>Out of scope for the demo. Where Flume goes if it weren't a portfolio piece.</p>
         </div>
@@ -239,7 +239,7 @@ export default function Build() {
         <span className="ps-section-label">BUILD TRACKER</span>
         <div className="ps-prose">
           <p>
-            The Notion board behind this build — tickets, decisions, and evolution log.
+            The Notion board behind this build.
           </p>
         </div>
         {NOTION_BOARD_URL ? (

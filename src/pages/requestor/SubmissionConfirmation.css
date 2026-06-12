@@ -190,6 +190,7 @@
   border-left: 2px solid var(--border-hard);
   padding: 16px 18px;
   white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 /* Approver chain */

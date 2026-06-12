@@ -158,6 +158,7 @@
   line-height: 1.65;
   color: var(--text-secondary);
   white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 /* ── Case History ────────────────────────────────────────── */
@@ -242,6 +243,7 @@
   font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.6;
+  overflow-wrap: break-word;
 }
 
 .acv-teams-callout {

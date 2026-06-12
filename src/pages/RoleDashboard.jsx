@@ -5,8 +5,9 @@ import { useCaseStore } from '../context/CaseStoreContext'
 import { useRequestorRead } from '../context/RequestorReadContext'
 
 const APPROVER_ROLES = [
-  'PM', 'Principal', 'Partner', 'Practice Head',
-  'Line Manager', 'Dept Leader', 'Regional COO', 'Talent Manager',
+  'Team Lead', 'Senior Director',
+  'Line Manager', 'Senior Manager', 'Department Head',
+  'HR Rep',
 ]
 
 export default function RoleDashboard() {

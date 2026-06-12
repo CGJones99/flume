@@ -32,7 +32,7 @@ export default function RequestorStub() {
                 <th>MODULE ID</th>
                 <th>MODULE NAME</th>
                 <th>TYPE</th>
-                <th>DELIVERY DATE</th>
+                <th>DEPLOYMENT DATE</th>
               </tr>
             </thead>
             <tbody>

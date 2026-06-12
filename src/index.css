@@ -1430,6 +1430,14 @@ body::after {
   transition: background 0.1s;
 }
 
+/* When open, pin the header so the collapse toggle is reachable
+ * anywhere in the (very long) PRD. top:52px clears the sticky nav. */
+.prd-expand[open] .prd-summary {
+  position: sticky;
+  top: 52px;
+  z-index: 30;
+}
+
 .prd-summary::-webkit-details-marker {
   display: none;
 }
@@ -1672,30 +1680,6 @@ body::after {
 }
 
 /* ── PRD sticky collapse button ─────────────────────────── */
-
-.prd-collapse-sticky {
-  position: sticky;
-  bottom: 0;
-  display: block;
-  width: calc(100% + 56px);
-  margin: 24px -28px -32px;
-  padding: 12px;
-  background: var(--bg-elevated);
-  border: none;
-  border-top: 1px solid var(--border-hard);
-  font-family: var(--font-display);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color 0.1s, background 0.1s;
-}
-
-.prd-collapse-sticky:hover {
-  color: var(--cyan);
-  background: var(--bg-card);
-}
 
 /* S-R8: unread past case row — pulses cyan until expanded */
 @keyframes rd-row-unread-pulse {

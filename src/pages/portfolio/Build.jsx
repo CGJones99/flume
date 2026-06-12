@@ -187,16 +187,6 @@ export default function Build() {
           </summary>
           <div className="prd-content">
             <MarkdownDoc source={prdContent} />
-            <button
-              className="prd-collapse-sticky"
-              onClick={e => {
-                const details = e.target.closest('details')
-                details.open = false
-                details.scrollIntoView({ behavior: 'smooth', block: 'start' })
-              }}
-            >
-              COLLAPSE ↑
-            </button>
           </div>
         </details>
       </section>

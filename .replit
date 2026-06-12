@@ -6,4 +6,5 @@ expertMode = true
 
 [deployment]
 deploymentTarget = "static"
-publicDir = "dist/public"
+publicDir = "dist"
+build = ["npm", "run", "build"]

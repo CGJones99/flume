@@ -195,7 +195,7 @@ dAdmin employees carry the staff type `admin` and are not assigned to any module
 - No backend, no database, no SSO
 - Policy engine: plain JS, runs client-side against `src/data/`
 - Fonts: Departure Mono, Geist, JetBrains Mono (CDN)
-- Hosted on Replit
+- Hosted on Vercel
 
 ---
 

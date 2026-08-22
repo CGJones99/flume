@@ -3,7 +3,7 @@
 **Structured case management for resource-policy exceptions in cost-center departments.**
 Auto-routed. Auditable. Every delay has a named responsible party.
 
-[Live Demo](https://flume-flame.vercel.app/) · [GitHub](https://github.com/CGJones99/flume)
+[Live Demo](https://flume-cgj.vercel.app/) · [GitHub](https://github.com/CGJones99/flume)
 
 ---
 

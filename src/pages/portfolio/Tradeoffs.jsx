@@ -38,7 +38,7 @@ const DECISIONS = [
     sub: '2026-06-09',
     body: [
       'Case and event state lives in React context only. No localStorage, sessionStorage, or external database. The decision was made on two grounds. First, isolation: each user running the demo gets a clean state with no risk of stale data from a prior session or conflicts from a concurrent viewer — persistence would require a reset mechanism and guards against cross-session pollution, adding complexity with no demo value. Second, simplicity: the demo is a single-session walkthrough, and in-memory state survives persona switches (which use client-side navigation without a page reload) cleanly.',
-      'The known limitation is that a full page refresh resets all case state, which is flagged in the demo README. Production would replace the in-memory store with a real database, with the context layer acting as the interface boundary — the switch requires no changes to any component that consumes the store.',
+      'The known limitation is that a full page refresh resets all case state, which is flagged in the demo README. Production would replace the in-memory store with a real database, but design accounts for that requiring only rewrites to CaseStoreContext.jsx instead of app-wide rewrites.',
     ],
   },
   {

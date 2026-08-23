@@ -153,10 +153,10 @@ const FWD_ITEMS = [
 ]
 
 const STACK_ROWS = [
-  ['Hosting', 'Replit', 'Velocity over credibility optics. Public URL, zero setup for non-technical recruiters.'],
+  ['Hosting', 'Vercel', 'Intially chose replit but ported to for zero config from GitHub & fast change previews.'],
   ['Frontend', 'React via Vite', 'Industry standard, hiring-panel recognition, clean for a browser-only app. Next.js rejected — SSR adds nothing for a client-only demo.'],
   ['Logic layer', 'Browser-side only', 'Policy engine runs in JS on the client. No server to stand up, deploy, or explain.'],
-  ['Dev tooling', 'Claude Code in VS Code', 'All code written locally, pushed to GitHub. Replit is hosting and execution, not authoring.'],
+  ['Dev tooling', 'Claude Code in VS Code', 'All code written locally, pushed to GitHub. Vercel is hosting and execution, not authoring.'],
   ['Seed data', 'JSON files', 'Relational structure between users, modules, roles, and deployment dates. Designed to swap for a real database in production.'],
   ['Portfolio structure', 'Single URL', 'One codebase, one deployment. Seamless recruiter experience without context switches or separate links.'],
 ]

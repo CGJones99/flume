@@ -153,7 +153,7 @@ const FWD_ITEMS = [
 ]
 
 const STACK_ROWS = [
-  ['Hosting', 'Vercel', 'Intially chose replit but ported to for zero config from GitHub & fast change previews.'],
+  ['Hosting', 'Vercel', 'Intially chose replit but ported to Vercel for zero config from GitHub & fast change previews.'],
   ['Frontend', 'React via Vite', 'Industry standard, hiring-panel recognition, clean for a browser-only app. Next.js rejected — SSR adds nothing for a client-only demo.'],
   ['Logic layer', 'Browser-side only', 'Policy engine runs in JS on the client. No server to stand up, deploy, or explain.'],
   ['Dev tooling', 'Claude Code in VS Code', 'All code written locally, pushed to GitHub. Vercel is hosting and execution, not authoring.'],
